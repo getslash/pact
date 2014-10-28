@@ -1,3 +1,5 @@
+import waiting
+
 from .utils import EdgeTriggered
 
 
@@ -18,6 +20,10 @@ class Pact(object):
         """
         return all(u.satisfied() for u in self._until)
 
+    def wait(self):
+        """Waits for this pact to finish
+        """
+        waiting.wait(self.finished)
+
     def __repr__(self):
         return self.msg
-

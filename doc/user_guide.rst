@@ -25,6 +25,9 @@ A *pact* wraps this api nicely:
 
 Note the example uses :func:`pact.Pact.until` to denote when the pact can be considered 'finished'.
 
+Checking Pact Status
+--------------------
+
 Our code can now interact with the returned *pact* object:
 
 .. code-block:: python
@@ -36,7 +39,17 @@ Our code can now interact with the returned *pact* object:
 		>>> p.finished()
 		True
 
+Waiting on Pacts
+----------------
 
+A very common scenario is to wait until a pact is finished. This is what the :func:`pact.Pact.wait` method is for:
+
+.. code-block:: python
+
+		>>> p = pact_delete_async('/path')
+		>>> p.wait()
+		>>> p.finished()
+		True
 
 
 		

@@ -7,6 +7,7 @@ with open(os.path.join(os.path.dirname(__file__), "pact", "__version__.py")) as 
 
 _INSTALL_REQUIRES = [
     'flux',
+    'waiting',
 ]
 
 setup(name="pact",
