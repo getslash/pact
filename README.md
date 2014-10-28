@@ -10,7 +10,7 @@ Overview
 ========
 *pact* is a library implementing a general concept of promises/deferreds. It less strictly follows known standards such as A+, but rather aims to be practical for library or framework implementations.
 
-Check out the [Getting Started guide](http://pact.readthedocs.org ) to get started.
+Check out the [user's guide](http://pact.readthedocs.org/en/latest/user_guide.html ) to get started.
 
 
 Licence
