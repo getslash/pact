@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import doctest
 import os
 
@@ -12,5 +14,12 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     if filename.endswith((".rst", ".md"))])
 def test_doctests(path):
     assert os.path.exists(path)
-    result = doctest.testfile(path, module_relative=False)
+
+    context_filename = path + ".ctx.py"
+    context = {}
+    if os.path.exists(context_filename):
+        with open(context_filename) as f:
+            exec(f.read(), context)
+
+    result = doctest.testfile(path, module_relative=False, globs=context)
     assert result.failed == 0

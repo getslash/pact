@@ -21,6 +21,22 @@ A *pact* wraps this api nicely:
 		...     operation_id = delete_async(path)
 		...     returned.until(is_async_delete_finished, operation_id)
 		...     return returned
+		
+
+Note the example uses :func:`pact.Pact.until` to denote when the pact can be considered 'finished'.
+
+Our code can now interact with the returned *pact* object:
+
+.. code-block:: python
+
+		>>> p = pact_delete_async('/path')
+		>>> p.finished()
+		False
+		>>> sleep(10)
+		>>> p.finished()
+		True
+
+
 
 
 		
