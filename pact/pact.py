@@ -16,10 +16,9 @@ class Pact(PactBase):
         """Adds a callback criterion for the completion of this pact
         """
         self._until.append(EdgeTriggered(callback, args, kwargs))
+        return self
 
-    def finished(self):
-        """Returns whether or not this pact is finished
-        """
+    def _is_finished(self):
         return all(u.satisfied() for u in self._until)
 
     def group_with(self, other):

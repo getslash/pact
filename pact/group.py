@@ -8,7 +8,7 @@ class PactGroup(PactBase):
         super(PactGroup, self).__init__()
         self._pacts = list(pacts)
 
-    def finished(self):
+    def _is_finished(self):
         return all(p.finished() for p in self._pacts)
 
     def _build_wait_predicate(self):

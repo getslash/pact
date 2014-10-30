@@ -89,6 +89,8 @@ The most immediate thing you can do on a pact group is wait for it to end altoge
 
 And of course it will be more descriptive when only one pact was not satisfied:
 
+.. code-block:: python
+
 		>>> group =(pact_delete_async('/path1') + pact_delete_async('/huge_directory'))
 		>>> try:
 		...     group.wait(timeout_seconds=10)
@@ -97,3 +99,36 @@ And of course it will be more descriptive when only one pact was not satisfied:
 		Got exception: Timeout of 10 seconds expired waiting for [Deleting /huge_directory]
 
 
+Triggering Actions
+------------------
+
+You can easily attach callbacks to occur when a pact finishes:
+
+.. code-block:: python
+       
+       >>> pact_delete_async('/path1').then(print, 'finished').wait()
+       finished
+
+This can be chained multiple times
+
+.. code-block:: python
+       
+       >>> pact_delete_async('/path1').\
+       ...    then(print, 'message1').\
+       ...    then(print, 'message2').\
+       ...    wait()
+       message1
+       message2
+
+Also for groups:
+
+.. code-block:: python
+       
+       >>> start_time = time()
+       >>> group = pact_delete_async('/path1').\
+       ...     then(lambda: print('path1 finished after', time() - start_time, 'seconds')) \
+       ...   + pact_delete_async('/huge_dir').\
+       ...     then(lambda: print('huge_dir finished after', time() - start_time, 'seconds'))
+       >>> group.wait()
+       path1 finished after 10.0 seconds
+       huge_dir finished after 30.0 seconds
