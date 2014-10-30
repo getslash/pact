@@ -1,5 +1,5 @@
-import flux
-
-sleep = flux.current_timeline.sleep
+from __future__ import print_function
 
 from tests.doctest_utils import *
+
+sleep = flux.current_timeline.sleep

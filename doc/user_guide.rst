@@ -46,6 +46,7 @@ A very common scenario is to wait until a pact is finished. This is what the :fu
 
 .. code-block:: python
 
+		>>> from pact import TimeoutExpired
 		>>> p = pact_delete_async('/path')
 		>>> p.wait()
 		>>> p.finished()
@@ -56,10 +57,11 @@ You can also specify a timeout in seconds. Expiration of the timeout will result
 .. code-block:: python
 
 		>>> p = pact_delete_async('/path')
-		>>> p.wait(timeout_seconds=1.5) #: doctest: +IGNORE_EXCEPTION_DETAIL
-		Traceback (most recent call last):
-		  ...
-		TimeoutExpired: Timeout of 1.5 seconds expired waiting for [Deleting /path]
+		>>> try:
+		...     p.wait(timeout_seconds=1.5)
+		... except TimeoutExpired as e:
+		...     print('Got exception:', e)
+		Got exception: Timeout of 1.5 seconds expired waiting for [Deleting /path]
 
 Grouping Pacts
 --------------
@@ -88,9 +90,10 @@ The most immediate thing you can do on a pact group is wait for it to end altoge
 And of course it will be more descriptive when only one pact was not satisfied:
 
 		>>> group =(pact_delete_async('/path1') + pact_delete_async('/huge_directory'))
-		>>> group.wait(timeout_seconds=10) #: doctest: +IGNORE_EXCEPTION_DETAIL
-		Traceback (most recent call last):
-		  ...
-		TimeoutExpired: Timeout of 10 seconds expired waiting for [Deleting /huge_directory]
+		>>> try:
+		...     group.wait(timeout_seconds=10)
+		... except TimeoutExpired as e:
+		...     print('Got exception:', e)
+		Got exception: Timeout of 10 seconds expired waiting for [Deleting /huge_directory]
 
 
