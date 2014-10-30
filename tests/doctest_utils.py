@@ -6,7 +6,8 @@ _id = itertools.count()
 
 def delete_async(path):
     returned = next(_id)
-    _async_deletes[returned] = flux.current_timeline.time() + 10
+    timeout = 10 if 'huge' not in path else 30
+    _async_deletes[returned] = flux.current_timeline.time() + timeout
     return returned
 
 def is_async_delete_finished(operation_id):

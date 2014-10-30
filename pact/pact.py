@@ -1,9 +1,11 @@
 import waiting
 
-from .utils import EdgeTriggered
+from .utils import EdgeTriggered, GroupWaitPredicate
+from .base import PactBase
+from .group import PactGroup
 
 
-class Pact(object):
+class Pact(PactBase):
 
     def __init__(self, msg):
         super(Pact, self).__init__()
@@ -20,10 +22,11 @@ class Pact(object):
         """
         return all(u.satisfied() for u in self._until)
 
-    def wait(self):
-        """Waits for this pact to finish
-        """
-        waiting.wait(self.finished)
+    def group_with(self, other):
+        return PactGroup([self, other])
+
+    def _build_wait_predicate(self):
+        return GroupWaitPredicate([self])
 
     def __repr__(self):
         return self.msg
