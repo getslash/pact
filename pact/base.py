@@ -12,13 +12,19 @@ class PactBase(object):
         super(PactBase, self).__init__()
         self._finished = False
         self._then = []
+        self._during = []
 
     def finished(self):
         """Returns whether or not this pact is finished
         """
+        if not self._finished:
+            for d in self._during:
+                d()
+
         was_finished = self._finished
         returned = self._finished = self._is_finished()
         exc_info = None
+
         if not was_finished and self._finished:
             for t in self._then:
                 try:
@@ -34,6 +40,12 @@ class PactBase(object):
         """Calls ``callback`` when this pact is finished
         """
         self._then.append(functools.partial(callback, *args, **kwargs))
+        return self
+
+    def during(self, callback, *args, **kwargs):
+        """Calls ``callback`` periodically while waiting for the pact to finish
+        """
+        self._during.append(functools.partial(callback, *args, **kwargs))
         return self
 
     def _is_finished(self):

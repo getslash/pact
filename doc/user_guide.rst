@@ -132,3 +132,14 @@ Also for groups:
        >>> group.wait()
        path1 finished after 10.0 seconds
        huge_dir finished after 30.0 seconds
+
+
+Triggering Actions During a Wait
+--------------------------------
+
+You can specify a callback to be called while the wait is ongoing, using :func:`pact.Pact.during`:
+
+.. code-block:: python
+       
+       >>> pact_delete_async('/path').during(print, '~', end='').then(print, 'Done!').wait()
+       ~~~~~~~~~~~Done!
