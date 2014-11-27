@@ -12,10 +12,15 @@ class Pact(PactBase):
         self.msg = msg
         self._until = []
 
-    def until(self, callback, *args, **kwargs):
+    def until(self, predicate, *args, **kwargs):
         """Adds a callback criterion for the completion of this pact
+
+        :param predicate: A callable that should return a True-ish value once the end condition is met
+
+        .. note:: When adding multiple predicates via multiple calls to until(), the pact waits on *all* of them to be
+          satisfied
         """
-        self._until.append(EdgeTriggered(callback, args, kwargs))
+        self._until.append(EdgeTriggered(predicate, args, kwargs))
         return self
 
     def _is_finished(self):
