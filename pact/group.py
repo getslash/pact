@@ -8,6 +8,10 @@ class PactGroup(PactBase):
         super(PactGroup, self).__init__()
         self._pacts = list(pacts)
 
+    def __iadd__(self, other):
+        self._pacts.append(other)
+        return self
+
     def _is_finished(self):
         return all(p.finished() for p in self._pacts)
 

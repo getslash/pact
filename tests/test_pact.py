@@ -25,7 +25,7 @@ def test_then_exception(pact, state, forge, callback):
     callback(1)
     callback(2).and_raise(SampleException())
     callback(3)
-    
+
     pact.then(callback, 1)
     pact.then(callback, 2)
     pact.then(callback, 3)
