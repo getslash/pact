@@ -5,8 +5,8 @@ from .utils import GroupWaitPredicate
 class PactGroup(PactBase):
 
     def __init__(self, pacts):
-        super(PactGroup, self).__init__()
         self._pacts = list(pacts)
+        super(PactGroup, self).__init__()
 
     def __iadd__(self, other):
         self._pacts.append(other)
