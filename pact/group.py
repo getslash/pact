@@ -18,3 +18,5 @@ class PactGroup(PactBase):
     def _build_wait_predicate(self):
         return GroupWaitPredicate(self._pacts)
 
+    def __str__(self):
+        return ", ".join(map(str, self._pacts))

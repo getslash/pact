@@ -1,5 +1,3 @@
-import waiting
-
 from .utils import EdgeTriggered, GroupWaitPredicate
 from .base import PactBase
 from .group import PactGroup
@@ -8,8 +6,8 @@ from .group import PactGroup
 class Pact(PactBase):
 
     def __init__(self, msg):
-        super(Pact, self).__init__()
         self.msg = msg
+        super(Pact, self).__init__()
         self._until = []
 
     def until(self, predicate, *args, **kwargs):
@@ -32,5 +30,5 @@ class Pact(PactBase):
     def _build_wait_predicate(self):
         return GroupWaitPredicate([self])
 
-    def __repr__(self):
+    def __str__(self):
         return self.msg

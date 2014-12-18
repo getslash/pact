@@ -61,7 +61,7 @@ You can also specify a timeout in seconds. Expiration of the timeout will result
 		...     p.wait(timeout_seconds=1.5)
 		... except TimeoutExpired as e:
 		...     print('Got exception:', e)
-		Got exception: Timeout of 1.5 seconds expired waiting for [Deleting /path]
+		Got exception: Timeout of 1.5 seconds expired waiting for [<Pact: Deleting /path>]
 
 Grouping Pacts
 --------------
@@ -96,7 +96,7 @@ And of course it will be more descriptive when only one pact was not satisfied:
 		...     group.wait(timeout_seconds=10)
 		... except TimeoutExpired as e:
 		...     print('Got exception:', e)
-		Got exception: Timeout of 10 seconds expired waiting for [Deleting /huge_directory]
+		Got exception: Timeout of 10 seconds expired waiting for [<Pact: Deleting /huge_directory>]
 
 
 Triggering Actions

@@ -1,9 +1,12 @@
 import functools
+import logging
 import sys
 
 import waiting
 
 from ._compat import reraise
+
+_logger = logging.getLogger(__name__)
 
 
 class PactBase(object):
@@ -13,6 +16,7 @@ class PactBase(object):
         self._finished = False
         self._then = []
         self._during = []
+        _logger.debug("%r was created", self)
 
     def finished(self):
         """Returns whether or not this pact is finished
@@ -61,8 +65,19 @@ class PactBase(object):
         """Waits for this pact to finish
         """
         predicate = self._build_wait_predicate()
-        waiting.wait(
-            predicate, timeout_seconds=timeout_seconds, waiting_for=predicate)
+        _logger.debug("Waiting for %r", self)
+        try:
+            waiting.wait(predicate, timeout_seconds=timeout_seconds, waiting_for=predicate)
+            _logger.debug("Finish waiting for %r", self)
+        except Exception:
+            _logger.debug("Exception was raised while waiting for %r", self, exc_info=True)
+            raise
 
     def _build_wait_predicate(self):
         raise NotImplementedError()  # pragma: no cover
+
+    def __str__(self):
+        return self.msg
+
+    def __repr__(self):
+        return "<{0}: {1}>".format(self.__class__.__name__, self)
