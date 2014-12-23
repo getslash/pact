@@ -18,6 +18,10 @@ class PactBase(object):
         self._during = []
         _logger.debug("%r was created", self)
 
+    def _validate_can_add_callback(self):
+        if self._finished:
+            raise RuntimeError('Cannot append then callbacks after pact was finished')
+
     def finished(self):
         """Returns whether or not this pact is finished
         """
@@ -43,12 +47,14 @@ class PactBase(object):
     def then(self, callback, *args, **kwargs):
         """Calls ``callback`` when this pact is finished
         """
+        self._validate_can_add_callback()
         self._then.append(functools.partial(callback, *args, **kwargs))
         return self
 
     def during(self, callback, *args, **kwargs):
         """Calls ``callback`` periodically while waiting for the pact to finish
         """
+        self._validate_can_add_callback()
         self._during.append(functools.partial(callback, *args, **kwargs))
         return self
 
