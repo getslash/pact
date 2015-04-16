@@ -7,10 +7,12 @@ import pytest
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
+DOCS_DIRS = [PROJECT_ROOT, os.path.join(PROJECT_ROOT, 'doc')]
+
 @pytest.mark.parametrize("path", [
     os.path.join(path, filename)
-    for path, _, filenames in os.walk(PROJECT_ROOT)
-    for filename in filenames
+    for path in DOCS_DIRS
+    for filename in os.listdir(path)
     if filename.endswith((".rst", ".md"))])
 def test_doctests(path):
     assert os.path.exists(path)
