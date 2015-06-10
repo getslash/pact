@@ -4,8 +4,8 @@ from .utils import GroupWaitPredicate
 
 class PactGroup(PactBase):
 
-    def __init__(self, pacts):
-        self._pacts = list(pacts)
+    def __init__(self, pacts=None):
+        self._pacts = [] if pacts is None else list(pacts)
         super(PactGroup, self).__init__()
 
     def __iadd__(self, other):
