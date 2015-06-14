@@ -69,7 +69,7 @@ Grouping Pacts
 Pacts support joining multiple instances together to form a group:
 
 .. code-block:: python
-
+		
 		>>> from pact import PactGroup
 		>>> p1 = pact_delete_async('/path1')
 		>>> p2 = pact_delete_async('/path2')
@@ -97,6 +97,27 @@ And of course it will be more descriptive when only one pact was not satisfied:
 		... except TimeoutExpired as e:
 		...     print('Got exception:', e)
 		Got exception: Timeout of 10 seconds expired waiting for [<Pact: Deleting /huge_directory>]
+
+Absorbing Pacts into Groups
+---------------------------
+
+Sometimes you would like to group pacts, but only fire the ``then`` callbacks when the entire group is satisfied. In addition to adding the ``then`` to the group itself, there is another shortcut called ``absorb``:
+
+.. code-block:: python
+       
+       >>> group = pact_delete_async('/path1').then(print, 'finished') + pact_delete_async('/huge_directory').then(print, 'also finished')
+
+In the above example, the ``also finished`` string will get printed once ``huge_directory`` is deleted. However this may be long before ``/path`` is deleted. To force all ``then`` callbacks to happen after the entire group finishes, we can use ``absorb``:
+
+.. code-block:: python
+       
+       >>> group = PactGroup()
+       >>> p1 = pact_delete_async('/path1').then(print, 'finished') 
+       >>> p2 = pact_delete_async('/huge_directory').then(print, 'also finished')
+       >>> group.add(p1, absorb=True)
+       >>> group.add(p2, absorb=True)
+
+.. note:: When absorbing pacts, the callbacks are no longer owned by the absorbed pacts, so waiting for them alone would not trigger them
 
 
 Triggering Actions

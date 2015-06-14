@@ -9,6 +9,41 @@ from pact import Pact
 def callback(forge):
     return forge.create_wildcard_function_stub()
 
+class Pred(object):
+
+    _satisfied = False
+
+    def satisfy(self):
+        self._satisfied = True
+
+    def __call__(self):
+        return self._satisfied
+
+class Callback(object):
+
+    called = False
+
+    def __call__(self):
+        self.called = True
+
+
+@pytest.fixture
+def callback1():
+    return Callback()
+
+@pytest.fixture
+def callback2():
+    return Callback()
+
+@pytest.fixture
+def pred1():
+    return Pred()
+
+@pytest.fixture
+def pred2():
+    return Pred()
+
+
 
 @pytest.fixture
 def forge(request):

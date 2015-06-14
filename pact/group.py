@@ -9,8 +9,19 @@ class PactGroup(PactBase):
         super(PactGroup, self).__init__()
 
     def __iadd__(self, other):
-        self._pacts.append(other)
+        self.add(other)
         return self
+
+    def add(self, pact, absorb=False):
+        if absorb and isinstance(pact, PactGroup):
+            if isinstance(pact, PactGroup):
+                raise NotImplementedError('Absorbing groups is not supported') # pragma: no cover
+        self._pacts.append(pact)
+        if absorb:
+            while pact._then:
+                # then might throw, so we attempt it first
+                self.then(pact._then[0])
+                pact._then.pop(0)
 
     def _is_finished(self):
         return all(p.finished() for p in self._pacts)
