@@ -70,20 +70,13 @@ class PactBase(object):
     def wait(self, timeout_seconds=None):
         """Waits for this pact to finish
         """
-        predicate = self._build_wait_predicate()
         _logger.debug("Waiting for %r", self)
         try:
-            waiting.wait(predicate, timeout_seconds=timeout_seconds, waiting_for=predicate)
+            waiting.wait(self.finished, timeout_seconds=timeout_seconds, waiting_for=self)
             _logger.debug("Finish waiting for %r", self)
         except Exception:
             _logger.debug("Exception was raised while waiting for %r", self, exc_info=True)
             raise
 
-    def _build_wait_predicate(self):
-        raise NotImplementedError()  # pragma: no cover
-
-    def __str__(self):
-        return self.msg
-
     def __repr__(self):
-        return "<{0}: {1}>".format(self.__class__.__name__, self)
+        raise NotImplementedError() # pragma: no cover

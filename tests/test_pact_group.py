@@ -2,8 +2,24 @@ import pytest
 from pact import Pact, PactGroup
 
 
+def test_group_wait_during(checkpoint, timed_group, num_seconds):
+    timed_group.during(checkpoint)
+    timed_group.wait()
+    assert checkpoint.called_times == num_seconds + 1
+
+
+def test_group_wait_then(checkpoint, checkpoint2, timed_group, timed_pact):
+    timed_group.then(checkpoint)
+    timed_pact.then(checkpoint2)
+    timed_group.wait()
+    assert checkpoint.called
+    assert checkpoint2.called
+    assert timed_group.finished()
+
+
 @pytest.mark.parametrize('adding_group', [True, False])
-def test_group_iadd_pact(group, adding_group):
+def test_group_iadd_pact(adding_group):
+    group = PactGroup()
     if adding_group:
         p1 = Pact('c') + Pact('d')
     else:
@@ -12,37 +28,37 @@ def test_group_iadd_pact(group, adding_group):
     assert group._pacts[-1] is p1
 
 
-def test_group_without_absorb_then(pred1, pred2, callback1, callback2):
-    p1 = Pact('a').until(pred1).then(callback1)
-    p2 = Pact('b').until(pred2).then(callback2)
+def test_group_without_absorb_then(pred1, pred2, checkpoint1, checkpoint2):
+    p1 = Pact('a').until(pred1).then(checkpoint1)
+    p2 = Pact('b').until(pred2).then(checkpoint2)
     group = p1 + p2
-    assert not callback1.called
+    assert not checkpoint1.called
     pred1.satisfy()
     assert not group.finished()
-    assert callback1.called
-    assert not callback2.called
+    assert checkpoint1.called
+    assert not checkpoint2.called
     pred2.satisfy()
     assert group.finished()
-    assert callback2.called
+    assert checkpoint2.called
 
 
-def test_group_with_absorb_then(pred1, pred2, callback1, callback2):
-    p1 = Pact('a').until(pred1).then(callback1)
-    p2 = Pact('b').until(pred2).then(callback2)
+def test_group_with_absorb_then(pred1, pred2, checkpoint1, checkpoint2):
+    p1 = Pact('a').until(pred1).then(checkpoint1)
+    p2 = Pact('b').until(pred2).then(checkpoint2)
     group = PactGroup()
     group.add(p1, absorb=True)
     group.add(p2, absorb=True)
     assert not p1._then
     assert not p2._then
-    assert not callback1.called
+    assert not checkpoint1.called
     pred1.satisfy()
     assert not group.finished()
-    assert not callback1.called
-    assert not callback2.called
+    assert not checkpoint1.called
+    assert not checkpoint2.called
     pred2.satisfy()
     assert group.finished()
-    assert callback1.called
-    assert callback2.called
+    assert checkpoint1.called
+    assert checkpoint2.called
 
 
 def test_abosrbing_group_not_implemented():
@@ -53,5 +69,17 @@ def test_abosrbing_group_not_implemented():
 
 
 @pytest.fixture
-def group():
-    return Pact('a') + Pact('b')
+def timed_group(timed_predicate, absorb, timed_pact):
+    returned = PactGroup()
+    returned.add(timed_pact, absorb=absorb)
+    return returned
+
+
+@pytest.fixture
+def timed_pact(timed_predicate_factory):
+    return Pact('delayed').until(timed_predicate_factory())
+
+
+@pytest.fixture(params=[True, False])
+def absorb(request):
+    return request.param

@@ -9,6 +9,7 @@ from pact import Pact
 def callback(forge):
     return forge.create_wildcard_function_stub()
 
+
 class Pred(object):
 
     _satisfied = False
@@ -19,30 +20,60 @@ class Pred(object):
     def __call__(self):
         return self._satisfied
 
-class Callback(object):
 
-    called = False
+class Checkpoint(object):
+
+    called_times = 0
 
     def __call__(self):
-        self.called = True
+        self.called_times += 1
+
+    @property
+    def called(self):
+        return self.called_times > 0
 
 
 @pytest.fixture
-def callback1():
-    return Callback()
+def checkpoint():
+    return Checkpoint()
+
 
 @pytest.fixture
-def callback2():
-    return Callback()
+def checkpoint1():
+    return Checkpoint()
+
+
+@pytest.fixture
+def checkpoint2():
+    return Checkpoint()
+
+@pytest.fixture
+def timed_predicate_factory(deadline):
+    def factory():
+        return lambda: flux.current_timeline.time() >= deadline
+    return factory
+
+@pytest.fixture
+def timed_predicate(timed_predicate_factory):
+    return timed_predicate_factory()
+
+@pytest.fixture
+def deadline(num_seconds):
+    return flux.current_timeline.time() + num_seconds
+
+@pytest.fixture
+def num_seconds():
+    return 10
+
 
 @pytest.fixture
 def pred1():
     return Pred()
 
+
 @pytest.fixture
 def pred2():
     return Pred()
-
 
 
 @pytest.fixture

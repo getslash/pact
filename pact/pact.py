@@ -31,5 +31,5 @@ class Pact(PactBase):
     def _build_wait_predicate(self):
         return GroupWaitPredicate([self])
 
-    def __str__(self):
-        return self.msg
+    def __repr__(self):
+        return '<Pact: {0}>'.format(self.msg)

@@ -1,3 +1,5 @@
+import collections
+
 from .base import PactBase
 from .utils import GroupWaitPredicate
 
@@ -5,7 +7,10 @@ from .utils import GroupWaitPredicate
 class PactGroup(PactBase):
 
     def __init__(self, pacts=None):
-        self._pacts = [] if pacts is None else list(pacts)
+        if pacts is None:
+            pacts = ()
+        self._pacts = collections.deque(pacts)
+        self._finished_pacts = []
         super(PactGroup, self).__init__()
 
     def __iadd__(self, other):
@@ -24,10 +29,15 @@ class PactGroup(PactBase):
                 pact._then.pop(0)
 
     def _is_finished(self):
-        return all(p.finished() for p in self._pacts)
+        finished_indices = []
+        while self._pacts:
+            p = self._pacts[0]
+            if p.finished():
+                self._finished_pacts.append(self._pacts.popleft())
+            else:
+                return False
+        # no more pacts
+        return True
 
-    def _build_wait_predicate(self):
-        return GroupWaitPredicate(self._pacts)
-
-    def __str__(self):
-        return ", ".join(map(str, self._pacts))
+    def __repr__(self):
+        return repr(list(self._pacts))
