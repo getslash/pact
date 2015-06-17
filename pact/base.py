@@ -67,12 +67,12 @@ class PactBase(object):
     def __add__(self, other):
         return self.group_with(other)
 
-    def wait(self, timeout_seconds=None):
+    def wait(self, **kwargs):
         """Waits for this pact to finish
         """
         _logger.debug("Waiting for %r", self)
         try:
-            waiting.wait(self.finished, timeout_seconds=timeout_seconds, waiting_for=self)
+            waiting.wait(self.finished, waiting_for=self, **kwargs)
             _logger.debug("Finish waiting for %r", self)
         except Exception:
             _logger.debug("Exception was raised while waiting for %r", self, exc_info=True)
