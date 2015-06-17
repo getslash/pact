@@ -1,7 +1,6 @@
 import collections
 
 from .base import PactBase
-from .utils import GroupWaitPredicate
 
 
 class PactGroup(PactBase):

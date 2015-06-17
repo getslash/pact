@@ -1,4 +1,4 @@
-from .utils import EdgeTriggered, GroupWaitPredicate
+from .utils import EdgeTriggered
 from .base import PactBase
 from .group import PactGroup
 
