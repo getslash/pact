@@ -38,9 +38,9 @@ class PactBase(object):
                 try:
                     t()
                 except Exception:
-                    _logger.warn("Exception thrown from 'then' callback", exc_info=True)
                     if exc_info is None:
                         exc_info = sys.exc_info()
+                    _logger.warn("Exception thrown from 'then' callback", exc_info=True)
         if exc_info is not None:
             reraise(*exc_info)
 
