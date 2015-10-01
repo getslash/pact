@@ -16,6 +16,9 @@ class PactGroup(PactBase):
         self.add(other)
         return self
 
+    def __iter__(self):
+        return iter(self._pacts)
+
     def add(self, pact, absorb=False):
         if absorb and isinstance(pact, PactGroup):
             if isinstance(pact, PactGroup):

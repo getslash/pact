@@ -68,6 +68,20 @@ def test_abosrbing_group_not_implemented():
         group.add(group2, absorb=True)
 
 
+def test_iterating_empty_pact_group():
+    assert list(PactGroup()) == []
+
+
+def test_iterating_nonempty_pact_group():
+    g = PactGroup()
+    p1 = Pact('1')
+    p2 = Pact('2')
+    g.add(p1)
+    g.add(p2)
+
+    assert list(g) == [p1, p2]
+
+
 @pytest.fixture
 def timed_group(timed_predicate, absorb, timed_pact):
     returned = PactGroup()
