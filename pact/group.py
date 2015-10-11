@@ -1,4 +1,5 @@
 import collections
+import itertools
 
 from .base import PactBase
 
@@ -17,7 +18,7 @@ class PactGroup(PactBase):
         return self
 
     def __iter__(self):
-        return iter(self._pacts)
+        return itertools.chain(self._pacts, self._finished_pacts)
 
     def add(self, pact, absorb=False):
         if absorb and isinstance(pact, PactGroup):

@@ -72,14 +72,24 @@ def test_iterating_empty_pact_group():
     assert list(PactGroup()) == []
 
 
-def test_iterating_nonempty_pact_group():
+@pytest.mark.parametrize('satisfy_first', [True, False])
+def test_iterating_nonempty_pact_group(pred1, pred2, satisfy_first):
     g = PactGroup()
-    p1 = Pact('1')
-    p2 = Pact('2')
+    p1 = Pact('1').until(pred1)
+    p2 = Pact('2').until(pred2)
     g.add(p1)
     g.add(p2)
 
     assert list(g) == [p1, p2]
+
+    if satisfy_first:
+        pred1.satisfy()
+    else:
+        pred2.satisfy()
+
+    g.poll()
+    assert sorted(g, key=str) == [p1, p2]
+
 
 
 @pytest.fixture
