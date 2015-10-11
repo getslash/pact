@@ -1,12 +1,20 @@
 language: python
 python:
-  - "2.6"
-  - "2.7"
-  - "3.3"
-  - "3.4"
-  - "pypy"
+- '2.6'
+- '2.7'
+- '3.3'
+- '3.4'
+- pypy
 install:
-  - pip install -r test_requirements.txt
-  - pip install -e .
-script: 
-  - "py.test tests"
+- pip install -r test_requirements.txt
+- pip install -e .
+script:
+- py.test tests
+deploy:
+  provider: pypi
+  user: vmalloc
+  password:
+    secure: Sru8c67ASNA+JRqtBtxDyQIJyRlHyNhcGdLen6HisGnh27YBmLYpgoYUem3YAwNkIneKgggnafOwhQpyVLGh6qkGtUiUJ76yN/57MrWabqq2N/xjvxpMDvCdB+Y/FeMOxkaEzzkCOauHrsUws/ePX/u65K4GgVQXZB17sDxAGwc=
+  on:
+    tags: true
+    repo: vmalloc/pact
