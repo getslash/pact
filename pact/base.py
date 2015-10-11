@@ -22,18 +22,24 @@ class PactBase(object):
         if self._finished:
             raise RuntimeError('Cannot append then callbacks after pact was finished')
 
-    def finished(self):
+    def is_finished(self):
         """Returns whether or not this pact is finished
         """
-        if not self._finished:
-            for d in self._during:
-                d()
+        return self._finished
 
-        was_finished = self._finished
+    def poll(self):
+        """Checks all predicates to see if we're finished
+        """
+        if self._finished:
+            return True
+
+        for d in self._during:
+            d()
+
         returned = self._finished = self._is_finished()
         exc_info = None
 
-        if not was_finished and self._finished:
+        if self._finished:
             for t in self._then:
                 try:
                     t()
@@ -44,7 +50,16 @@ class PactBase(object):
         if exc_info is not None:
             reraise(*exc_info)
 
-        return returned
+        return self.is_finished()
+
+
+    def finished(self):
+        """Deprecated. Use poll() or is_finished() instead
+        """
+        _logger.warning('Pact.finished() is deprecated. Use poll() and/or is_finished() instead')
+        self.poll()
+        return self.is_finished()
+
 
     def then(self, callback, *args, **kwargs):
         """Calls ``callback`` when this pact is finished
@@ -74,7 +89,7 @@ class PactBase(object):
         """
         _logger.debug("Waiting for {0!r}", self)
         try:
-            waiting.wait(self.finished, waiting_for=self, **kwargs)
+            waiting.wait(self.poll, waiting_for=self, **kwargs)
             _logger.debug("Finish waiting for {0!r}", self)
         except Exception:
             _logger.debug("Exception was raised while waiting for {0!r}", self, exc_info=True)

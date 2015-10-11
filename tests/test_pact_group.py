@@ -14,7 +14,7 @@ def test_group_wait_then(checkpoint, checkpoint2, timed_group, timed_pact):
     timed_group.wait()
     assert checkpoint.called
     assert checkpoint2.called
-    assert timed_group.finished()
+    assert timed_group.is_finished()
 
 
 @pytest.mark.parametrize('adding_group', [True, False])
@@ -34,11 +34,11 @@ def test_group_without_absorb_then(pred1, pred2, checkpoint1, checkpoint2):
     group = p1 + p2
     assert not checkpoint1.called
     pred1.satisfy()
-    assert not group.finished()
+    assert not group.poll()
     assert checkpoint1.called
     assert not checkpoint2.called
     pred2.satisfy()
-    assert group.finished()
+    assert group.poll() and group.is_finished()
     assert checkpoint2.called
 
 
@@ -52,11 +52,11 @@ def test_group_with_absorb_then(pred1, pred2, checkpoint1, checkpoint2):
     assert not p2._then
     assert not checkpoint1.called
     pred1.satisfy()
-    assert not group.finished()
+    assert not group.poll() and not group.is_finished()
     assert not checkpoint1.called
     assert not checkpoint2.called
     pred2.satisfy()
-    assert group.finished()
+    assert group.poll() and group.is_finished()
     assert checkpoint1.called
     assert checkpoint2.called
 

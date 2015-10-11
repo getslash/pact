@@ -34,7 +34,7 @@ class PactGroup(PactBase):
         finished_indices = []
         while self._pacts:
             p = self._pacts[0]
-            if p.finished():
+            if p.poll():
                 self._finished_pacts.append(self._pacts.popleft())
             else:
                 return False
