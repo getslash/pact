@@ -28,15 +28,21 @@ Note the example uses :func:`pact.Pact.until` to denote when the pact can be con
 Checking Pact Status
 --------------------
 
-Our code can now interact with the returned *pact* object:
+Our code can now interact with the returned *pact* object. Checking whether or not a pact is finished can be done using the ``is_finished`` predicate, but it does not cause our pact to actually check its predicates for completion. That is done by ``poll``:
 
 .. code-block:: python
 
 		>>> p = pact_delete_async('/path')
-		>>> p.finished()
+		>>> p.poll()
+		False
+		>>> p.is_finished()
 		False
 		>>> sleep(10)
-		>>> p.finished()
+		>>> p.is_finished()
+		False
+		>>> p.poll()
+		True
+		>>> p.is_finished()
 		True
 
 Waiting on Pacts
@@ -49,7 +55,7 @@ A very common scenario is to wait until a pact is finished. This is what the :fu
 		>>> from pact import TimeoutExpired
 		>>> p = pact_delete_async('/path')
 		>>> p.wait()
-		>>> p.finished()
+		>>> p.is_finished()
 		True
 
 You can also specify a timeout in seconds. Expiration of the timeout will result in an exception:
