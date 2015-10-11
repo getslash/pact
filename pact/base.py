@@ -1,12 +1,12 @@
 import functools
-import logging
+import logbook
 import sys
 
 import waiting
 
 from ._compat import reraise
 
-_logger = logging.getLogger(__name__)
+_logger = logbook.Logger(__name__)
 
 
 class PactBase(object):
@@ -16,7 +16,7 @@ class PactBase(object):
         self._finished = False
         self._then = []
         self._during = []
-        _logger.debug("%r was created", self)
+        _logger.debug("{0!r} was created", self)
 
     def _validate_can_add_callback(self):
         if self._finished:
@@ -72,12 +72,12 @@ class PactBase(object):
     def wait(self, **kwargs):
         """Waits for this pact to finish
         """
-        _logger.debug("Waiting for %r", self)
+        _logger.debug("Waiting for {0!r}", self)
         try:
             waiting.wait(self.finished, waiting_for=self, **kwargs)
-            _logger.debug("Finish waiting for %r", self)
+            _logger.debug("Finish waiting for {0!r}", self)
         except Exception:
-            _logger.debug("Exception was raised while waiting for %r", self, exc_info=True)
+            _logger.debug("Exception was raised while waiting for {0!r}", self, exc_info=True)
             raise
 
     def __repr__(self):
