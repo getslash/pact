@@ -29,4 +29,4 @@ class Pact(PactBase):
         return PactGroup([self, other])
 
     def __repr__(self):
-        return '<Pact: {0}>'.format(self.msg)
+        return '<{0.__class__.__name__}: {0.msg}>'.format(self)
