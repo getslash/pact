@@ -1,6 +1,7 @@
 import functools
 import logbook
 import sys
+from logbook.utils import deprecated
 
 import waiting
 
@@ -53,10 +54,10 @@ class PactBase(object):
         return self.is_finished()
 
 
+    @deprecated('Use poll() and/or is_finished() instead')
     def finished(self):
         """Deprecated. Use poll() or is_finished() instead
         """
-        _logger.warning('Pact.finished() is deprecated. Use poll() and/or is_finished() instead')
         self.poll()
         return self.is_finished()
 

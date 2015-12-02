@@ -7,7 +7,7 @@ with open(os.path.join(os.path.dirname(__file__), "pact", "__version__.py")) as 
 
 _INSTALL_REQUIRES = [
     'flux',
-    'Logbook>=0.11.2',
+    'Logbook>=0.12.2',
     'waiting',
 ]
 
