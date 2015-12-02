@@ -1,7 +1,7 @@
 default: test
 
 test: env
-	.env/bin/py.test -x tests
+	.env/bin/py.test -x tests --cov=pact --cov-report=html
 
 env: .env/.up-to-date
 

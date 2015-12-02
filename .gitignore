@@ -7,3 +7,5 @@ flycheck-*
 dist
 .env
 .cache
+.coverage
+htmlcov
