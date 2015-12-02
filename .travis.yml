@@ -7,11 +7,15 @@ python:
 - '3.4'
 - '3.5'
 - pypy
+before_install:
+  - pip install coveralls
 install:
 - pip install -r test_requirements.txt
 - pip install -e .
 script:
-- py.test tests
+- py.test tests --cov=pact
+after_success:
+- coveralls
 deploy:
   provider: pypi
   user: vmalloc
