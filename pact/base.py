@@ -36,7 +36,7 @@ class PactBase(object):
         for d in self._during:
             d()
 
-        returned = self._finished = self._is_finished()
+        self._finished = self._is_finished()
         exc_info = None
 
         if self._finished:

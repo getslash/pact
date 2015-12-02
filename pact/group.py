@@ -32,7 +32,6 @@ class PactGroup(PactBase):
                 pact._then.pop(0)
 
     def _is_finished(self):
-        finished_indices = []
         while self._pacts:
             p = self._pacts[0]
             if p.poll():

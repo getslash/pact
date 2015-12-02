@@ -28,8 +28,5 @@ class Pact(PactBase):
     def group_with(self, other):
         return PactGroup([self, other])
 
-    def _build_wait_predicate(self):
-        return GroupWaitPredicate([self])
-
     def __repr__(self):
         return '<Pact: {0}>'.format(self.msg)
