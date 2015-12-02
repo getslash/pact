@@ -28,5 +28,8 @@ class Pact(PactBase):
     def group_with(self, other):
         return PactGroup([self, other])
 
+    def __add__(self, other):
+        return self.group_with(other)
+
     def __repr__(self):
         return '<{0.__class__.__name__}: {0.msg}>'.format(self)

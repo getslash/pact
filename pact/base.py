@@ -78,12 +78,6 @@ class PactBase(object):
     def _is_finished(self):
         raise NotImplementedError()  # pragma: no cover
 
-    def group_with(self, other):
-        raise NotImplementedError()  # pragma: no cover
-
-    def __add__(self, other):
-        return self.group_with(other)
-
     def wait(self, **kwargs):
         """Waits for this pact to finish
         """
