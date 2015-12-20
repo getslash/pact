@@ -37,10 +37,14 @@ class PactBase(object):
         for d in self._during:
             d()
 
+        # We keep the previous value of finished to support gevent --
+        # only trigger then() callbacks if we are the greenlet that
+        # detected the transition into finished
+        prev_finished = self._finished
         self._finished = self._is_finished()
         exc_info = None
 
-        if self._finished:
+        if self._finished and not prev_finished:
             for t in self._then:
                 try:
                     t()
