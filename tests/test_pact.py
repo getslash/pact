@@ -40,6 +40,12 @@ def test_add_pact_callback_after_pact_finished(pact, state, pact_callback, forge
 
     forge.verify()
 
+
+def test_add_not_callable_to_pact_fails(pact, pact_callback):
+    with pytest.raises(AssertionError):
+        pact_callback(True)
+
+
 def test_then_exception(pact, state, forge, callback):
     callback(1)
     callback(2).and_raise(SampleException())
@@ -66,3 +72,4 @@ class SampleException(Exception):
 def pact_callback(request, pact):
     name = request.param
     return getattr(pact, name)
+
