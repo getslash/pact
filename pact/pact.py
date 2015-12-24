@@ -18,6 +18,7 @@ class Pact(PactBase):
         .. note:: When adding multiple predicates via multiple calls to until(), the pact waits on *all* of them to be
           satisfied
         """
+        assert callable(predicate)
         self._validate_can_add_callback()
         self._until.append(EdgeTriggered(predicate, args, kwargs))
         return self

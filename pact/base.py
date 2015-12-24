@@ -69,6 +69,7 @@ class PactBase(object):
     def then(self, callback, *args, **kwargs):
         """Calls ``callback`` when this pact is finished
         """
+        assert callable(callback)
         self._validate_can_add_callback()
         self._then.append(functools.partial(callback, *args, **kwargs))
         return self
@@ -76,6 +77,7 @@ class PactBase(object):
     def during(self, callback, *args, **kwargs):
         """Calls ``callback`` periodically while waiting for the pact to finish
         """
+        assert callable(callback)
         self._validate_can_add_callback()
         self._during.append(functools.partial(callback, *args, **kwargs))
         return self
