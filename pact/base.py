@@ -14,6 +14,7 @@ class PactBase(object):
 
     def __init__(self):
         super(PactBase, self).__init__()
+        self._triggered = False # Make sure we only trigger 'then' once, even if using greenlets
         self._finished = False
         self._then = []
         self._during = []
@@ -37,14 +38,11 @@ class PactBase(object):
         for d in self._during:
             d()
 
-        # We keep the previous value of finished to support gevent --
-        # only trigger then() callbacks if we are the greenlet that
-        # detected the transition into finished
-        prev_finished = self._finished
         self._finished = self._is_finished()
         exc_info = None
 
-        if self._finished and not prev_finished:
+        if self._finished and not self._triggered: 
+            self._triggered = True
             for t in self._then:
                 try:
                     t()
