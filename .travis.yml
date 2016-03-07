@@ -23,4 +23,4 @@ deploy:
     secure: Sru8c67ASNA+JRqtBtxDyQIJyRlHyNhcGdLen6HisGnh27YBmLYpgoYUem3YAwNkIneKgggnafOwhQpyVLGh6qkGtUiUJ76yN/57MrWabqq2N/xjvxpMDvCdB+Y/FeMOxkaEzzkCOauHrsUws/ePX/u65K4GgVQXZB17sDxAGwc=
   on:
     tags: true
-    repo: vmalloc/pact
+    repo: getslash/pact
