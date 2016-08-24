@@ -170,3 +170,15 @@ You can specify a callback to be called while the wait is ongoing, using :func:`
        
        >>> pact_delete_async('/path').during(print, '~', end='').then(print, 'Done!').wait()
        ~~~~~~~~~~~Done!
+
+Triggering Actions on Timeout
+-----------------------------
+
+Using the :func:`pact.Pact.on_timeout` method, you can add additional callbacks to be called when a timeout is encountered:
+
+.. code-block:: python
+       
+       >>> pact_delete_async('/path').on_timeout(print, 'bummer').on_timeout(print, 'so what now?').wait()
+
+
+

@@ -4,6 +4,7 @@ import sys
 from logbook.utils import deprecated
 
 import waiting
+from waiting.exceptions import TimeoutExpired
 
 from ._compat import reraise
 
@@ -18,6 +19,7 @@ class PactBase(object):
         self._finished = False
         self._then = []
         self._during = []
+        self._timeout_callbacks = []
         _logger.debug("{0!r} was created", self)
 
     def _validate_can_add_callback(self):
@@ -80,6 +82,14 @@ class PactBase(object):
         self._during.append(functools.partial(callback, *args, **kwargs))
         return self
 
+    def on_timeout(self, callback, *args, **kwargs):
+        """Calls ``callback`` when a wait timeout is encountered
+        """
+        assert callable(callback)
+        self._validate_can_add_callback()
+        self._timeout_callbacks.append(functools.partial(callback, *args, **kwargs))
+        return self
+
     def _is_finished(self):
         raise NotImplementedError()  # pragma: no cover
 
@@ -90,6 +100,11 @@ class PactBase(object):
         try:
             waiting.wait(self.poll, waiting_for=self, **kwargs)
             _logger.debug("Finish waiting for {0!r}", self)
+        except TimeoutExpired:
+            exc_info = sys.exc_info()
+            for timeout_callback in self._timeout_callbacks:
+                timeout_callback()
+            reraise(*exc_info)
         except Exception:
             _logger.debug("Exception was raised while waiting for {0!r}", self, exc_info=True)
             raise
