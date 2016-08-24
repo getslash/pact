@@ -41,12 +41,12 @@ class PactBase(object):
         self._finished = self._is_finished()
         exc_info = None
 
-        if self._finished and not self._triggered: 
+        if self._finished and not self._triggered:
             self._triggered = True
             for t in self._then:
                 try:
                     t()
-                except Exception:
+                except Exception: # pylint: disable=broad-except
                     if exc_info is None:
                         exc_info = sys.exc_info()
                     _logger.debug("Exception thrown from 'then' callback", exc_info=True)
