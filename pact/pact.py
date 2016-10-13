@@ -24,7 +24,7 @@ class Pact(PactBase):
         return self
 
     def _is_finished(self):
-        return all(u.satisfied() for u in self._until)
+        return all(predicate.satisfied() for predicate in self._until)
 
     def group_with(self, other):
         return PactGroup([self, other])
