@@ -37,17 +37,17 @@ class PactBase(object):
         if self._finished:
             return True
 
-        for d in self._during:
-            d()
+        for callback in self._during:
+            callback()
 
         self._finished = self._is_finished()
         exc_info = None
 
         if self._finished and not self._triggered:
             self._triggered = True
-            for t in self._then:
+            for callback in self._then:
                 try:
-                    t()
+                    callback()
                 except Exception: # pylint: disable=broad-except
                     if exc_info is None:
                         exc_info = sys.exc_info()

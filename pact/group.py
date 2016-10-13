@@ -33,8 +33,8 @@ class PactGroup(PactBase):
 
     def _is_finished(self):
         while self._pacts:
-            p = self._pacts[0]
-            if p.poll():
+            pact = self._pacts[0]
+            if pact.poll():
                 self._finished_pacts.append(self._pacts.popleft())
             else:
                 return False
