@@ -51,7 +51,8 @@ class PactBase(object):
                 except Exception: # pylint: disable=broad-except
                     if exc_info is None:
                         exc_info = sys.exc_info()
-                    _logger.debug("Exception thrown from 'then' callback of {0!r}", self, exc_info=True)
+                    _logger.debug("Exception thrown from 'then' callback {0!r} of {1!r}",
+                                  callback, self, exc_info=True)
         if exc_info is not None:
             reraise(*exc_info)
 
