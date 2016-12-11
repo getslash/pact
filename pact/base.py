@@ -26,6 +26,11 @@ class PactBase(object):
         if self._finished:
             raise RuntimeError('Cannot append then callbacks after pact was finished')
 
+    def get_timeout_exception(self, exc_info): # pylint: disable=no-self-use, unused-argument
+        """Returns exception to be used when wait() times out. Default reraises waiting.TimeoutExpired.
+        """
+        return None
+
     def is_finished(self):
         """Returns whether or not this pact is finished
         """
@@ -105,7 +110,11 @@ class PactBase(object):
             exc_info = sys.exc_info()
             for timeout_callback in self._timeout_callbacks:
                 timeout_callback()
-            reraise(*exc_info)
+            exc = self.get_timeout_exception(exc_info)
+            if exc is None:
+                reraise(*exc_info)
+            else:
+                raise exc # pylint: disable=raising-bad-type
         except Exception:
             _logger.debug("Exception was raised while waiting for {0!r}", self, exc_info=True)
             raise
