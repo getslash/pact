@@ -37,12 +37,12 @@ class PactGroup(PactBase):
         indexes_to_remove = []
         for index, pact in enumerate(self._pacts):
             if pact.poll():
-                indexes_to_remove.insert(0, index)
+                indexes_to_remove.append(index)
             else:
                 has_finished = False
                 if self._is_lazy:
                     break
-        for index in indexes_to_remove:
+        for index in reversed(indexes_to_remove):
             self._finished_pacts.append(self._pacts.pop(index))
         return has_finished
 
