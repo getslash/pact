@@ -104,6 +104,25 @@ And of course it will be more descriptive when only one pact was not satisfied:
 		...     print('Got exception:', e)
 		Got exception: Timeout of 10 seconds expired waiting for [<Pact: Deleting /huge_directory>]
 
+Waiting for group is a lazy operation, by default, which means that will poll pacts only if previous pact had finished:
+
+.. code-block:: python
+
+       >>> pact_a = pact_delete_async('/path_a').during(print, 'a', end='').then(print, 'A', end='')
+       >>> pact_b = pact_delete_async('/path_b').during(print, 'b', end='').then(print, 'B')
+       >>> PactGroup([pact_a, pact_b]).wait()
+       aaaaaaaaaaaAbB
+
+Group can be poll eagerly by passing ``lazy=True`` to its creation:
+
+.. code-block:: python
+
+       >>> pact_a = pact_delete_async('/path_a').during(print, 'a', end='').then(print, 'A', end='')
+       >>> pact_b = pact_delete_async('/path_b').during(print, 'b', end='').then(print, 'B')
+       >>> PactGroup([pact_a, pact_b], lazy=False).wait()
+       ababababababababababaAbB
+
+
 Absorbing Pacts into Groups
 ---------------------------
 
