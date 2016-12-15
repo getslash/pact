@@ -113,7 +113,7 @@ Waiting for group is a lazy operation, by default, which means that will poll pa
        >>> PactGroup([pact_a, pact_b]).wait()
        aaaaaaaaaaaAbB
 
-Group can be poll eagerly by passing ``lazy=True`` to its creation:
+Group can be poll eagerly by passing ``lazy=False`` to its creation. This will make each polling operation to poll all unfinished pacts in the group every time.
 
 .. code-block:: python
 
