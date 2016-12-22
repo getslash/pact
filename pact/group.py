@@ -8,7 +8,7 @@ class PactGroup(PactBase):
     def __init__(self, pacts=None, lazy=True):
         if pacts is None:
             pacts = []
-        self._pacts = pacts[:]
+        self._pacts = list(pacts)
         self._finished_pacts = []
         self._is_lazy = lazy
         super(PactGroup, self).__init__()
