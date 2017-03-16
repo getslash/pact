@@ -22,8 +22,7 @@ class PactGroup(PactBase):
 
     def add(self, pact, absorb=False):
         if absorb and isinstance(pact, PactGroup):
-            if isinstance(pact, PactGroup):
-                raise NotImplementedError('Absorbing groups is not supported') # pragma: no cover
+            raise NotImplementedError('Absorbing groups is not supported') # pragma: no cover
         self._pacts.append(pact)
         if absorb:
             # pylint: disable=protected-access
