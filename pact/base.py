@@ -20,6 +20,7 @@ class PactBase(object):
         self._then = []
         self._during = []
         self._timeout_callbacks = []
+        self.timeout_seconds = None
         _logger.debug("{0!r} was created", self)
 
     def _validate_can_add_callback(self):
@@ -96,15 +97,21 @@ class PactBase(object):
         self._timeout_callbacks.append(functools.partial(callback, *args, **kwargs))
         return self
 
+    def set_timeout(self, timeout_seconds):
+        self.timeout_seconds = timeout_seconds
+
     def _is_finished(self):
         raise NotImplementedError()  # pragma: no cover
 
-    def wait(self, **kwargs):
+    def wait(self, timeout_seconds=None, **kwargs):
         """Waits for this pact to finish
         """
+        if timeout_seconds is None:
+            timeout_seconds = self.timeout_seconds
+
         _logger.debug("Waiting for {0!r}", self)
         try:
-            waiting.wait(self.poll, waiting_for=self, **kwargs)
+            waiting.wait(self.poll, waiting_for=self, timeout_seconds=timeout_seconds, **kwargs)
             _logger.debug("Finish waiting for {0!r}", self)
         except TimeoutExpired:
             exc_info = sys.exc_info()
