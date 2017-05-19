@@ -58,7 +58,19 @@ A very common scenario is to wait until a pact is finished. This is what the :fu
 		>>> p.is_finished()
 		True
 
-You can also specify a timeout in seconds. Expiration of the timeout will result in an exception:
+You can also set the default timeout for the pact. This is done by using :func:`pact.Pact.set_default_timeout` method:
+
+.. code-block:: python
+
+		>>> p = pact_delete_async('/path')
+		>>> p.set_default_timeout(timeout_seconds=5)
+		>>> try:
+		...     p.wait()
+		... except TimeoutExpired as e:
+		...     print('Got exception:', e)
+		Got exception: Timeout of 5 seconds expired waiting for <Pact: Deleting /path>
+
+Another option is to specify a timeout in seconds, which will override the default. Expiration of the timeout will result in an exception:
 
 .. code-block:: python
 
