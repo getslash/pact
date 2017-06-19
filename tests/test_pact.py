@@ -78,8 +78,8 @@ def test_on_timeout(pact, callback, forge):
         pact.wait(timeout_seconds=3)
 
 
-def test_set_default_timeout(pact):
-    pact.set_default_timeout(1)
+def test_set_timeout(pact):
+    pact.set_timeout(1)
     with pytest.raises(TimeoutExpired):
         pact.wait()
 
