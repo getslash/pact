@@ -2,10 +2,9 @@ import functools
 import logbook
 import sys
 from logbook.utils import deprecated
-
+import flux
 import waiting
 from waiting.exceptions import TimeoutExpired
-
 from ._compat import reraise
 
 _logger = logbook.Logger(__name__)
@@ -13,13 +12,14 @@ _logger = logbook.Logger(__name__)
 
 class PactBase(object):
 
-    def __init__(self):
+    def __init__(self, timeout_seconds):
         super(PactBase, self).__init__()
         self._triggered = False # Make sure we only trigger 'then' once, even if using greenlets
         self._finished = False
         self._then = []
         self._during = []
         self._timeout_callbacks = []
+        self._end_time = None if timeout_seconds is None else flux.current_timeline.time() + timeout_seconds
         _logger.debug("{0!r} was created", self)
 
     def _validate_can_add_callback(self):
@@ -104,6 +104,8 @@ class PactBase(object):
         """
         _logger.debug("Waiting for {0!r}", self)
         try:
+            if 'timeout_seconds' not in kwargs and self._end_time is not None:
+                kwargs['timeout_seconds'] = max(0, self._end_time - flux.current_timeline.time())
             waiting.wait(self.poll, waiting_for=self, **kwargs)
             _logger.debug("Finish waiting for {0!r}", self)
         except TimeoutExpired:
