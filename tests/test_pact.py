@@ -1,5 +1,5 @@
 import pact
-
+import flux
 import pytest
 from waiting.exceptions import TimeoutExpired
 
@@ -76,6 +76,46 @@ def test_on_timeout(pact, callback, forge):
     forge.replay()
     with pytest.raises(TimeoutExpired):
         pact.wait(timeout_seconds=3)
+
+
+def test_wait_no_timeout_seconds_throws_after_duration(pact_duration, num_seconds):
+    time_before = flux.current_timeline.time()
+    with pytest.raises(TimeoutExpired):
+        pact_duration.wait()
+    assert num_seconds == flux.current_timeline.time() - time_before
+
+
+def test_wait_no_timeout_seconds_called_after_duration_passed_immediately_throws(pact_duration, num_seconds):
+    time_first = flux.current_timeline.time()
+    flux.current_timeline.set_time(time_first + num_seconds + 1)
+    time_before = flux.current_timeline.time()
+    with pytest.raises(TimeoutExpired):
+        pact_duration.wait()
+    assert time_before == flux.current_timeline.time()
+
+
+def test_wait_with_timeout_seconds_and_duration_throws_after_timeout_seconds(pact_duration, num_seconds):
+    timeout = num_seconds + 1
+    time_before = flux.current_timeline.time()
+    with pytest.raises(TimeoutExpired):
+        pact_duration.wait(timeout_seconds=timeout)
+    assert timeout == flux.current_timeline.time() - time_before
+
+
+def test_wait_with_timeout_seconds_and_duration_throws_after_timeout_seconds_duration_smaller(pact_duration, num_seconds):
+    timeout = num_seconds - 1
+    time_before = flux.current_timeline.time()
+    with pytest.raises(TimeoutExpired):
+        pact_duration.wait(timeout_seconds=timeout)
+    assert timeout == flux.current_timeline.time() - time_before
+
+
+def test_duration_doesnt_effect_finished_pacts(pact_duration, state):
+    state.finish()
+    time_before = flux.current_timeline.time()
+    pact_duration.wait()
+    assert time_before == flux.current_timeline.time()
+    assert pact_duration.poll() and pact_duration.is_finished()
 
 
 class SampleException(Exception):

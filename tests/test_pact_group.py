@@ -1,5 +1,7 @@
 import pytest
+import flux
 from pact import Pact, PactGroup
+from waiting.exceptions import TimeoutExpired
 
 
 def test_group_wait_during(checkpoint, timed_group, num_seconds):
@@ -26,6 +28,32 @@ def test_group_iadd_pact(adding_group):
         p1 = Pact('c')
     group += p1
     assert group._pacts[-1] is p1
+
+
+def test_group_with_duration(pact, num_seconds):
+    time_before = flux.current_timeline.time()
+    group = PactGroup([pact], timeout_seconds=num_seconds)
+    with pytest.raises(TimeoutExpired):
+        group.wait()
+    assert num_seconds == flux.current_timeline.time() - time_before
+
+
+def test_group_with_duration_wait_timeout_seconds(pact, num_seconds):
+    timeout = num_seconds + 1
+    time_before = flux.current_timeline.time()
+    group = PactGroup([pact], timeout_seconds=num_seconds)
+    with pytest.raises(TimeoutExpired):
+        group.wait(timeout_seconds=timeout)
+    assert timeout == flux.current_timeline.time() - time_before
+
+
+def test_group_and_pact_with_duration(pact_duration, num_seconds):
+    group_duration = num_seconds + 10
+    time_before = flux.current_timeline.time()
+    group = PactGroup([pact_duration], timeout_seconds=group_duration)
+    with pytest.raises(TimeoutExpired):
+        group.wait()
+    assert group_duration == flux.current_timeline.time() - time_before
 
 
 def test_group_without_absorb_then(pred1, pred2, checkpoint1, checkpoint2):

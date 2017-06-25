@@ -5,13 +5,13 @@ from .base import PactBase
 
 class PactGroup(PactBase):
 
-    def __init__(self, pacts=None, lazy=True):
+    def __init__(self, pacts=None, lazy=True, timeout_seconds=None):
         if pacts is None:
             pacts = []
         self._pacts = list(pacts)
         self._finished_pacts = []
         self._is_lazy = lazy
-        super(PactGroup, self).__init__()
+        super(PactGroup, self).__init__(timeout_seconds)
 
     def __iadd__(self, other):
         self.add(other)
