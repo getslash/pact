@@ -104,6 +104,11 @@ def pact(state):
     return Pact('test pact').until(state.is_finished)
 
 
+@pytest.fixture
+def pact_duration(state, num_seconds):
+    return Pact('test pact', num_seconds).until(state.is_finished)
+
+
 class State(object):
 
     def __init__(self):

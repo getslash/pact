@@ -5,9 +5,9 @@ from .group import PactGroup
 
 class Pact(PactBase):
 
-    def __init__(self, msg):
+    def __init__(self, msg, timeout_seconds=None):
         self.msg = msg
-        super(Pact, self).__init__()
+        super(Pact, self).__init__(timeout_seconds)
         self._until = []
 
     def until(self, predicate, *args, **kwargs):
