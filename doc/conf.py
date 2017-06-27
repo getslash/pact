@@ -113,7 +113,7 @@ html_theme_path = [alabaster.get_path()]
 html_theme = 'alabaster'
 html_theme_options = {
     'logo': 'pact-logo.png',
-    'github_user': 'vmalloc',
+    'github_user': 'getslash',
     'github_repo': 'pact',
     'github_button': True,
     'github_banner': True,
