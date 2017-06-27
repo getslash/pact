@@ -123,11 +123,12 @@ Group can be poll eagerly by passing ``lazy=False`` to its creation. This will m
        ababababababababababaAbB
 
 
-Specifying pre-compouted deadlines for pacts and groups
--------------------------------------------------------
+Specifying Pre-Compouted Deadlines
+----------------------------------
 
-Pacts and groups allow you to specify a deadline using the parameter 'timeout_seconds' passed to their constructor.
-This parameter specify the seconds until the pact will expire, starting to count from it's creation:
+Pacts and pact groups allow you to specify a deadline using the ``timeout_seconds`` parameter passed to their constructors.
+
+This parameter specifies the overall number of seconds within which the pact is expected to finish, starting from it's creation:
 
 
 .. code-block:: python
@@ -138,7 +139,7 @@ This parameter specify the seconds until the pact will expire, starting to count
 		...     returned.until(is_async_delete_finished, operation_id)
 		...     return returned
 
-When calling :func:`pact.Pact.wait` witheout the parameter ``timeout_seconds``, it will expire when the deadline is reached (or immediately if it was already reached).
+When calling :func:`pact.Pact.wait` witheout the parameter ``timeout_seconds``, it will expire when the overall deadline is reached (or immediately if has already passed).
 
 .. code-block:: python
 
@@ -149,7 +150,7 @@ When calling :func:`pact.Pact.wait` witheout the parameter ``timeout_seconds``, 
 			 ...     print('Got exception:', e)
 			 Got exception: Timeout of 8.0 seconds expired waiting for <Pact: Deleting /path>
 
-A common use-case is executing asynchronous command with known expected duration, doing other calculations, and then wait for the command to finish.
+A common use-case is executing asynchronous command with known expected duration, peforming other tasks, and then waiting for the command to finish.
 Calling :func:`pact.Pact.wait` with the parameter ``timeout_seconds`` will behave as regular (wait until timeout_seconds passed or until the pact is finished).
 
 Absorbing Pacts into Groups
