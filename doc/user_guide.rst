@@ -21,7 +21,7 @@ A *pact* wraps this api nicely:
 		...     operation_id = delete_async(path)
 		...     returned.until(is_async_delete_finished, operation_id)
 		...     return returned
-		
+
 
 Note the example uses :func:`pact.Pact.until` to denote when the pact can be considered 'finished'.
 
@@ -75,7 +75,7 @@ Grouping Pacts
 Pacts support joining multiple instances together to form a group:
 
 .. code-block:: python
-		
+
 		>>> from pact import PactGroup
 		>>> p1 = pact_delete_async('/path1')
 		>>> p2 = pact_delete_async('/path2')
@@ -123,21 +123,51 @@ Group can be poll eagerly by passing ``lazy=False`` to its creation. This will m
        ababababababababababaAbB
 
 
+Specifying Pre-Compouted Deadlines
+----------------------------------
+
+Pacts and pact groups allow you to specify a deadline using the ``timeout_seconds`` parameter passed to their constructors.
+
+This parameter specifies the overall number of seconds within which the pact is expected to finish, starting from it's creation:
+
+
+.. code-block:: python
+
+		>>> def pact_delete_async_known_time(path, timeout_seconds=None):
+		...     returned = Pact('Deleting {0}'.format(path), timeout_seconds=timeout_seconds)
+		...     operation_id = delete_async(path)
+		...     returned.until(is_async_delete_finished, operation_id)
+		...     return returned
+
+When calling :func:`pact.Pact.wait` witheout the parameter ``timeout_seconds``, it will expire when the overall deadline is reached (or immediately if has already passed).
+
+.. code-block:: python
+
+			 >>> pact = pact_delete_async_known_time('/path', timeout_seconds=8)
+			 >>> try:
+			 ...     pact.wait()
+			 ... except TimeoutExpired as e:
+			 ...     print('Got exception:', e)
+			 Got exception: Timeout of 8.0 seconds expired waiting for <Pact: Deleting /path>
+
+A common use-case is executing asynchronous command with known expected duration, peforming other tasks, and then waiting for the command to finish.
+Calling :func:`pact.Pact.wait` with the parameter ``timeout_seconds`` will behave as regular (wait until timeout_seconds passed or until the pact is finished).
+
 Absorbing Pacts into Groups
 ---------------------------
 
 Sometimes you would like to group pacts, but only fire the ``then`` callbacks when the entire group is satisfied. In addition to adding the ``then`` to the group itself, there is another shortcut called ``absorb``:
 
 .. code-block:: python
-       
+
        >>> group = pact_delete_async('/path1').then(print, 'finished') + pact_delete_async('/huge_directory').then(print, 'also finished')
 
 In the above example, the ``also finished`` string will get printed once ``huge_directory`` is deleted. However this may be long before ``/path`` is deleted. To force all ``then`` callbacks to happen after the entire group finishes, we can use ``absorb``:
 
 .. code-block:: python
-       
+
        >>> group = PactGroup()
-       >>> p1 = pact_delete_async('/path1').then(print, 'finished') 
+       >>> p1 = pact_delete_async('/path1').then(print, 'finished')
        >>> p2 = pact_delete_async('/huge_directory').then(print, 'also finished')
        >>> group.add(p1, absorb=True)
        >>> group.add(p2, absorb=True)
@@ -151,14 +181,14 @@ Triggering Actions
 You can easily attach callbacks to occur when a pact finishes:
 
 .. code-block:: python
-       
+
        >>> pact_delete_async('/path1').then(print, 'finished').wait()
        finished
 
 This can be chained multiple times
 
 .. code-block:: python
-       
+
        >>> pact_delete_async('/path1').\
        ...    then(print, 'message1').\
        ...    then(print, 'message2').\
@@ -169,7 +199,7 @@ This can be chained multiple times
 Also for groups:
 
 .. code-block:: python
-       
+
        >>> start_time = time()
        >>> group = pact_delete_async('/path1').\
        ...     then(lambda: print('path1 finished after', time() - start_time, 'seconds')) \
@@ -186,7 +216,7 @@ Triggering Actions During a Wait
 You can specify a callback to be called while the wait is ongoing, using :func:`pact.Pact.during`:
 
 .. code-block:: python
-       
+
        >>> pact_delete_async('/path').during(print, '~', end='').then(print, 'Done!').wait()
        ~~~~~~~~~~~Done!
 
@@ -196,8 +226,5 @@ Triggering Actions on Timeout
 Using the :func:`pact.Pact.on_timeout` method, you can add additional callbacks to be called when a timeout is encountered:
 
 .. code-block:: python
-       
+
        >>> pact_delete_async('/path').on_timeout(print, 'bummer').on_timeout(print, 'so what now?').wait()
-
-
-
