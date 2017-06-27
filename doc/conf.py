@@ -32,7 +32,12 @@ nitpicky = True
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'releases',
 ]
+
+releases_issue_uri = "https://github.com/vmalloc/pact/issues/%s"
+releases_release_uri = "https://github.com/vmalloc/pact/tree/%s"
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

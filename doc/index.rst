@@ -17,6 +17,7 @@ Contents:
 
    user_guide
    api
+   changelog
 
 
 
