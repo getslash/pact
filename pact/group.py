@@ -30,6 +30,10 @@ class PactGroup(PactBase):
                 # then might throw, so we attempt it first
                 self.then(pact._then[0])
                 pact._then.pop(0)
+            while pact._lastly:
+                # lastly might throw, so we attempt it first
+                self.lastly(pact._lastly[0])
+                pact._lastly.pop(0)
 
     def _is_finished(self):
         has_finished = True

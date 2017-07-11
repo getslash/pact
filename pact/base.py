@@ -1,11 +1,12 @@
+import flux
 import functools
+import itertools
 import logbook
 import sys
-from logbook.utils import deprecated
-import flux
 import waiting
-from waiting.exceptions import TimeoutExpired
 from ._compat import reraise
+from logbook.utils import deprecated
+from waiting.exceptions import TimeoutExpired
 
 _logger = logbook.Logger(__name__)
 
@@ -17,6 +18,7 @@ class PactBase(object):
         self._triggered = False # Make sure we only trigger 'then' once, even if using greenlets
         self._finished = False
         self._then = []
+        self._lastly = []
         self._during = []
         self._timeout_callbacks = []
         self._end_time = None if timeout_seconds is None else flux.current_timeline.time() + timeout_seconds
@@ -50,13 +52,13 @@ class PactBase(object):
 
         if self._finished and not self._triggered:
             self._triggered = True
-            for callback in self._then:
+            for callback in itertools.chain(self._then, self._lastly):
                 try:
                     callback()
                 except Exception: # pylint: disable=broad-except
                     if exc_info is None:
                         exc_info = sys.exc_info()
-                    _logger.debug("Exception thrown from 'then' callback {0!r} of {1!r}",
+                    _logger.debug("Exception thrown from 'then/lastly' callback {!r} of {!r}",
                                   callback, self, exc_info=True)
         if exc_info is not None:
             reraise(*exc_info)
@@ -71,13 +73,20 @@ class PactBase(object):
         self.poll()
         return self.is_finished()
 
-
     def then(self, callback, *args, **kwargs):
         """Calls ``callback`` when this pact is finished
         """
         assert callable(callback)
         self._validate_can_add_callback()
         self._then.append(functools.partial(callback, *args, **kwargs))
+        return self
+
+    def lastly(self, callback, *args, **kwargs):
+        """Calls ``callback`` when this pact is finished, after all 'then' callbacks
+        """
+        assert callable(callback)
+        self._validate_can_add_callback()
+        self._lastly.append(functools.partial(callback, *args, **kwargs))
         return self
 
     def during(self, callback, *args, **kwargs):

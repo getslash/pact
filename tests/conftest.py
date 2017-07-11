@@ -47,6 +47,12 @@ def checkpoint1():
 def checkpoint2():
     return Checkpoint()
 
+
+@pytest.fixture
+def checkpoint3():
+    return Checkpoint()
+
+
 @pytest.fixture
 def timed_predicate_factory(deadline):
     def factory():

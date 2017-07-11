@@ -1,9 +1,7 @@
 language: python
 sudo: false
 python:
-- '2.6'
 - '2.7'
-- '3.3'
 - '3.4'
 - '3.5'
 - '3.6'
@@ -11,10 +9,10 @@ python:
 before_install:
   - pip install coveralls
 install:
-- pip install -r test_requirements.txt
+- pip install -U -r test_requirements.txt
 - pip install -e .
 script:
-- py.test tests --cov=pact
+- pytest tests --cov=pact
 after_success:
 - coveralls
 deploy:
