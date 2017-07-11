@@ -53,11 +53,17 @@ def test_then_exception(pact, state, forge, callback):
     callback(1)
     callback(2).and_raise(SampleException())
     callback(3)
+    callback(4)
+    callback(5).and_raise(AnotherSampleException())
+    callback(6)
 
     forge.replay()
 
+    pact.lastly(callback, 4)
+    pact.lastly(callback, 5)
     pact.then(callback, 1)
     pact.then(callback, 2)
+    pact.lastly(callback, 6)
     pact.then(callback, 3)
 
     state.finish()
@@ -119,6 +125,10 @@ def test_duration_doesnt_effect_finished_pacts(pact_duration, state):
 
 
 class SampleException(Exception):
+    pass
+
+
+class AnotherSampleException(Exception):
     pass
 
 

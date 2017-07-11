@@ -209,6 +209,15 @@ Also for groups:
        path1 finished after 10.0 seconds
        huge_dir finished after 30.0 seconds
 
+Similarly, you can attach callbacks used for cleanup that will occur when a pact finishes but after all 'then' callbacks:
+
+.. code-block:: python
+
+       >>> pact_delete_async('/path1').lastly(print, 'cleaning up').then(print, 'finished').wait()
+       finished
+       cleaning up
+
+Lastly callbacks can be chained or added to groups just like normal 'then' callbacks.
 
 Triggering Actions During a Wait
 --------------------------------
