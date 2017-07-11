@@ -32,7 +32,12 @@ nitpicky = True
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'releases',
 ]
+
+releases_issue_uri = "https://github.com/vmalloc/pact/issues/%s"
+releases_release_uri = "https://github.com/vmalloc/pact/tree/%s"
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -108,7 +113,7 @@ html_theme_path = [alabaster.get_path()]
 html_theme = 'alabaster'
 html_theme_options = {
     'logo': 'pact-logo.png',
-    'github_user': 'vmalloc',
+    'github_user': 'getslash',
     'github_repo': 'pact',
     'github_button': True,
     'github_banner': True,
