@@ -21,7 +21,7 @@ def test_doctests(path):
     context = {}
     if os.path.exists(context_filename):
         with open(context_filename) as f:
-            exec(f.read(), context)
+            exec(f.read(), context)  # pylint: disable=exec-used
 
     result = doctest.testfile(path, module_relative=False, globs=context)
     assert result.failed == 0
