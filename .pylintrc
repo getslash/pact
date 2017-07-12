@@ -1,0 +1,15 @@
+[MESSAGES CONTROL]
+disable=missing-docstring,too-many-public-methods,too-few-public-methods,no-self-use,import-error,locally-disabled,invalid-name,wrong-import-order,,bad-option-value,ungrouped-imports,too-many-arguments
+
+[FORMAT]
+max-line-length=120
+
+[TYPECHECK]
+ignored-classes = MayhemShell,Infinio
+ignored-modules = flux.current_timeline,infi.shell,slash.hooks
+
+
+[REPORTS]
+reports=no
+score=no
+output-format=parseable

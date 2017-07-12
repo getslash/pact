@@ -4,6 +4,7 @@ from forge import Forge
 import pytest
 from pact import Pact
 
+# pylint: disable=redefined-outer-name
 
 @pytest.fixture
 def callback(forge):
@@ -88,7 +89,7 @@ def forge(request):
     returned = Forge()
 
     @request.addfinalizer
-    def cleanup():
+    def cleanup():  # pylint: disable=unused-variable
         returned.verify()
         returned.restore_all_replacements()
 
