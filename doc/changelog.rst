@@ -1,6 +1,7 @@
 Changelog
 =========
 
+* :bug:`- major` Handle exceptions thrown in a 'during' callback
 * :release:`1.8.0 <11-07-2017>`
 * :feature:`-` Add lastly callbacks that are similar to 'then' but called afterwards
 * :release:`1.7.0 <27-06-2017>`
