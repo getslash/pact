@@ -3,6 +3,7 @@ import flux
 import pytest
 from waiting.exceptions import TimeoutExpired
 
+# pylint: disable=redefined-outer-name
 
 @pytest.mark.parametrize('reprify', [repr, str])
 def test_str_repr(reprify):
@@ -44,9 +45,32 @@ def test_add_pact_callback_after_pact_finished(pact, state, pact_callback, forge
     forge.verify()
 
 
-def test_add_not_callable_to_pact_fails(pact, pact_callback):
+def test_add_not_callable_to_pact_fails(pact_callback):
     with pytest.raises(AssertionError):
         pact_callback(True)
+
+
+def test_during_exception(pact, state, forge, callback):
+    callback(1)
+    callback(2).and_raise(SampleException())
+    callback(3)
+    callback(4)
+    callback(5)
+
+    forge.replay()
+
+    pact.during(callback, 1)
+    pact.during(callback, 2)
+    pact.during(callback, 3)
+    pact.then(callback, 4)
+    pact.lastly(callback, 5)
+
+    state.finish()
+    with pytest.raises(SampleException):
+        pact.poll()
+
+    forge.verify()
+    assert pact.is_finished()
 
 
 def test_then_exception(pact, state, forge, callback):
@@ -108,7 +132,8 @@ def test_wait_with_timeout_seconds_and_duration_throws_after_timeout_seconds(pac
     assert timeout == flux.current_timeline.time() - time_before
 
 
-def test_wait_with_timeout_seconds_and_duration_throws_after_timeout_seconds_duration_smaller(pact_duration, num_seconds):
+def test_wait_with_timeout_seconds_and_duration_throws_after_timeout_seconds_duration_smaller(pact_duration,
+                                                                                              num_seconds):
     timeout = num_seconds - 1
     time_before = flux.current_timeline.time()
     with pytest.raises(TimeoutExpired):

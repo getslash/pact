@@ -3,6 +3,7 @@ import flux
 from pact import Pact, PactGroup
 from waiting.exceptions import TimeoutExpired
 
+# pylint: disable=redefined-outer-name
 
 def test_group_wait_during(checkpoint, timed_group, num_seconds):
     timed_group.during(checkpoint)
@@ -31,7 +32,7 @@ def test_group_iadd_pact(adding_group):
     else:
         p1 = Pact('c')
     group += p1
-    assert group._pacts[-1] is p1
+    assert group._pacts[-1] is p1  # pylint: disable=protected-access
 
 
 def test_group_with_duration(pact, num_seconds):
@@ -78,6 +79,7 @@ def test_group_without_absorb(pred1, pred2, checkpoint, checkpoint1, checkpoint2
 
 
 def test_group_with_absorb(pred1, pred2, checkpoint, checkpoint1, checkpoint2, checkpoint3):
+    # pylint: disable=protected-access
     p1 = Pact('a').until(pred1).lastly(checkpoint).then(checkpoint1)
     p2 = Pact('b').until(pred2).then(checkpoint2).lastly(checkpoint3)
     group = PactGroup()
@@ -135,7 +137,7 @@ def test_iterating_nonempty_pact_group(pred1, pred2, satisfy_first):
 
 
 @pytest.fixture
-def timed_group(timed_predicate, absorb, timed_pact):
+def timed_group(absorb, timed_pact):
     returned = PactGroup()
     returned.add(timed_pact, absorb=absorb)
     return returned

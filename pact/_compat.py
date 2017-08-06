@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
-# Based on logbook.helpers, licensed under BSD. See https://github.com/mitsuhiko/logbook/blob/0.4.2/logbook/compat.py for copyright information
+# Based on logbook.helpers, licensed under BSD. See https://github.com/mitsuhiko/logbook/blob/0.4.2/logbook/compat.py
+# for copyright information
 
-#pylint: disable=import-error
-#pylint: disable=maybe-no-member
-#pylint: disable=no-name-in-module
-#pylint: disable=undefined-variable
-#pylint: disable=unused-argument
-#pylint: disable=unused-import
-#pylint: disable=exec-used
+# pylint: disable=import-error
+# pylint: disable=maybe-no-member
+# pylint: disable=no-name-in-module
+# pylint: disable=undefined-variable
+# pylint: disable=unused-argument
+# pylint: disable=unused-import
+# pylint: disable=exec-used
+# pylint: disable=redefined-builtin
 import sys
 
 PY2 = sys.version_info[0] == 2

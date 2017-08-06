@@ -1,6 +1,5 @@
 import flux
 import functools
-import itertools
 import logbook
 import sys
 import waiting
@@ -44,27 +43,31 @@ class PactBase(object):
         if self._finished:
             return True
 
-        for callback in self._during:
-            callback()
+        exc_info = self._process_callbacks('during')
 
         self._finished = self._is_finished()
-        exc_info = None
 
         if self._finished and not self._triggered:
             self._triggered = True
-            for callback in itertools.chain(self._then, self._lastly):
-                try:
-                    callback()
-                except Exception: # pylint: disable=broad-except
-                    if exc_info is None:
-                        exc_info = sys.exc_info()
-                    _logger.debug("Exception thrown from 'then/lastly' callback {!r} of {!r}",
-                                  callback, self, exc_info=True)
+            then_exc_info = self._process_callbacks('then')
+            lastly_exc_info = self._process_callbacks('lastly')
+            exc_info = exc_info or then_exc_info or lastly_exc_info
+
         if exc_info is not None:
             reraise(*exc_info)
 
         return self.is_finished()
 
+    def _process_callbacks(self, name):
+        exc_info = None
+        for callback in getattr(self, '_{}'.format(name)):
+            try:
+                callback()
+            except Exception: # pylint: disable=broad-except
+                if exc_info is None:
+                    exc_info = sys.exc_info()
+                _logger.debug("Exception thrown from '{}' callback {!r} of {!r}", name, callback, self, exc_info=True)
+        return exc_info
 
     @deprecated('Use poll() and/or is_finished() instead')
     def finished(self):
