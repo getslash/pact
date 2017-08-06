@@ -1,6 +1,5 @@
 import flux
 import functools
-import itertools
 import logbook
 import sys
 import waiting
