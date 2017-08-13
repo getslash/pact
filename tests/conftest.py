@@ -2,24 +2,13 @@ import flux
 from forge import Forge
 
 import pytest
-from pact import Pact
+from pact import Pact, PactGroup, PactChain
 
 # pylint: disable=redefined-outer-name
 
 @pytest.fixture
 def callback(forge):
     return forge.create_wildcard_function_stub()
-
-
-class Pred(object):
-
-    _satisfied = False
-
-    def satisfy(self):
-        self._satisfied = True
-
-    def __call__(self):
-        return self._satisfied
 
 
 class Checkpoint(object):
@@ -32,6 +21,17 @@ class Checkpoint(object):
     @property
     def called(self):
         return self.called_times > 0
+
+class Pred(Checkpoint):
+
+    _satisfied = False
+
+    def satisfy(self):
+        self._satisfied = True
+
+    def __call__(self):
+        super(Pred, self).__call__()
+        return self._satisfied
 
 
 @pytest.fixture
@@ -114,6 +114,16 @@ def pact(state):
 @pytest.fixture
 def pact_duration(state, num_seconds):
     return Pact('test pact', num_seconds).until(state.is_finished)
+
+
+@pytest.fixture(params=[True, False])
+def absorb(request):
+    return request.param
+
+
+@pytest.fixture(params=[PactGroup, PactChain])
+def collection_type(request):
+    return request.param
 
 
 class State(object):

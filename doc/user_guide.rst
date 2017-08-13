@@ -122,6 +122,18 @@ Group can be poll eagerly by passing ``lazy=False`` to its creation. This will m
        >>> PactGroup([pact_a, pact_b], lazy=False).wait()
        ababababababababababaAbB
 
+Chaining Pacts
+--------------
+
+Pact chains behave quite similar to groups, with the only difference that polling each pact starts only after previous pacts are satistied:
+
+.. code-block:: python
+
+       >>> from pact import PactChain
+       >>> pact_a = pact_delete_async('/path_a').during(print, 'a', end='').then(print, 'A', end='')
+       >>> pact_b = pact_delete_async('/path_b').during(print, 'b', end='').then(print, 'B')
+       >>> PactChain([pact_a, pact_b]).wait()
+       aaaaaaaaaaaAbB
 
 Specifying Pre-Compouted Deadlines
 ----------------------------------
