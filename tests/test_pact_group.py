@@ -61,6 +61,19 @@ def test_group_and_pact_with_duration(pact_duration, num_seconds):
     assert group_duration == flux.current_timeline.time() - time_before
 
 
+def test_group_with_custom_timeout(state):
+    class MyTimeoutException(Exception):
+        pass
+    class MyPact(Pact):
+        def get_timeout_exception(self, exc_info):
+            return MyTimeoutException()
+
+    pact = MyPact('custom exception pact').until(state.is_finished)
+    group = PactGroup([Pact('dummy pact'), pact], timeout_seconds=0)
+    with pytest.raises(MyTimeoutException):
+        group.wait()
+
+
 def test_group_without_absorb(pred1, pred2, checkpoint, checkpoint1, checkpoint2, checkpoint3):
     p1 = Pact('a').until(pred1).lastly(checkpoint).then(checkpoint1)
     p2 = Pact('b').until(pred2).then(checkpoint2).lastly(checkpoint3)
