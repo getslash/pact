@@ -1,6 +1,7 @@
 Changelog
 =========
 
+* :release:`1.10.0 <15-10-2017>`
 * :feature:`-` ``PactGroup`` raises custom timeout exception from child if available
 * :release:`1.9.0 <6-8-2017>`
 * :bug:`- major` Handle exceptions thrown in a 'during' callback
