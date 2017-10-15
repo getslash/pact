@@ -20,6 +20,11 @@ class PactGroup(PactBase):
     def __iter__(self):
         return itertools.chain(self._pacts, self._finished_pacts)
 
+    def get_timeout_exception(self, exc_info):
+        if self._pacts:
+            return self._pacts[0].get_timeout_exception(exc_info)
+        return super(PactGroup, self).get_timeout_exception(exc_info)
+
     def add(self, pact, absorb=False):
         if absorb and isinstance(pact, PactGroup):
             raise NotImplementedError('Absorbing groups is not supported') # pragma: no cover
