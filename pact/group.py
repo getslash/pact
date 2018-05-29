@@ -5,12 +5,15 @@ from .base import PactBase
 
 class PactGroup(PactBase):
 
-    def __init__(self, pacts=None, lazy=True, timeout_seconds=None):
+    def __init__(self, pacts=None, lazy=True, timeout_seconds=None, poll_window=None):
+        if poll_window is not None and lazy:
+            raise ValueError("'lazy' and 'poll_window' are mutually exclusive")
+
         if pacts is None:
             pacts = []
         self._pacts = list(pacts)
         self._finished_pacts = []
-        self._is_lazy = lazy
+        self._poll_window = 1 if lazy else poll_window
         super(PactGroup, self).__init__(timeout_seconds)
 
     def __iadd__(self, other):
@@ -41,18 +44,22 @@ class PactGroup(PactBase):
                 pact._lastly.pop(0)
 
     def _is_finished(self):
-        has_finished = True
         indexes_to_remove = []
+
+        unfinished = 0
         for index, pact in enumerate(self._pacts):
             if pact.poll():
                 indexes_to_remove.append(index)
             else:
-                has_finished = False
-                if self._is_lazy:
-                    break
+                if self._poll_window:
+                    unfinished += 1
+                    if unfinished == self._poll_window:
+                        break
+
         for index in reversed(indexes_to_remove):
             self._finished_pacts.append(self._pacts.pop(index))
-        return has_finished
+
+        return not bool(self._pacts)
 
     def __repr__(self):
         return repr(list(self._pacts))

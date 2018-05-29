@@ -43,6 +43,11 @@ def test_group_with_duration(pact, num_seconds):
     assert num_seconds == flux.current_timeline.time() - time_before
 
 
+def test_lazy_with_poll_window(pact):
+    with pytest.raises(ValueError):
+        PactGroup([pact], lazy=True, poll_window=1)
+
+
 def test_group_with_duration_wait_timeout_seconds(pact, num_seconds):
     timeout = num_seconds + 1
     time_before = flux.current_timeline.time()
@@ -72,6 +77,29 @@ def test_group_with_custom_timeout(state):
     group = PactGroup([Pact('dummy pact'), pact], timeout_seconds=0)
     with pytest.raises(MyTimeoutException):
         group.wait()
+
+
+def test_group_with_poll_window(pred1, pred2, checkpoint1, checkpoint2):
+    p1 = Pact('a').until(pred1).then(checkpoint1)
+    p2 = Pact('b').until(pred2).then(checkpoint2)
+    group = PactGroup([p1, p2], lazy=False, poll_window=1)
+
+    assert not checkpoint1.called
+    assert not checkpoint2.called
+
+    assert not group.poll()
+    assert not checkpoint1.called
+    assert not checkpoint2.called
+
+    pred2.satisfy()
+    assert not group.poll()
+    assert not checkpoint1.called
+    assert not checkpoint2.called
+
+    pred1.satisfy()
+    assert group.poll() and group.is_finished()
+    assert checkpoint1.called
+    assert checkpoint2.called
 
 
 def test_group_without_absorb(pred1, pred2, checkpoint, checkpoint1, checkpoint2, checkpoint3):
