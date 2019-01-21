@@ -4,7 +4,6 @@ import logbook
 import sys
 import waiting
 from ._compat import reraise
-from logbook.utils import deprecated
 from waiting.exceptions import TimeoutExpired
 
 _logger = logbook.Logger(__name__)
@@ -68,13 +67,6 @@ class PactBase(object):
                     exc_info = sys.exc_info()
                 _logger.debug("Exception thrown from '{}' callback {!r} of {!r}", name, callback, self, exc_info=True)
         return exc_info
-
-    @deprecated('Use poll() and/or is_finished() instead')
-    def finished(self):
-        """Deprecated. Use poll() or is_finished() instead
-        """
-        self.poll()
-        return self.is_finished()
 
     def then(self, callback, *args, **kwargs):
         """Calls ``callback`` when this pact is finished
