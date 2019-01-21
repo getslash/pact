@@ -7,7 +7,6 @@ python:
 - '3.5'
 - '3.6'
 - '3.7'
-- pypy
 before_install:
   - pip install -U setuptools pip
   - pip install coveralls
