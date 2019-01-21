@@ -124,7 +124,7 @@ class PactBase(object):
             exc_info = sys.exc_info()
             for timeout_callback in self._timeout_callbacks:
                 timeout_callback()
-            exc = self.get_timeout_exception(exc_info)
+            exc = self.get_timeout_exception(exc_info)  # pylint: disable=assignment-from-none
             if exc is None:
                 reraise(*exc_info)
             else:
