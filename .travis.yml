@@ -25,3 +25,4 @@ deploy:
   on:
     tags: true
     repo: getslash/pact
+    python: "3.6"
