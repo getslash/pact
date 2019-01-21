@@ -114,12 +114,12 @@ class PactBase(object):
     def wait(self, **kwargs):
         """Waits for this pact to finish
         """
-        _logger.debug("Waiting for {0!r}", self)
+        _logger.debug("Waiting for {!r}...", self)
+        start_time = flux.current_timeline.time()
+        if 'timeout_seconds' not in kwargs and self._end_time is not None:
+            kwargs['timeout_seconds'] = max(0, self._end_time - start_time)
         try:
-            if 'timeout_seconds' not in kwargs and self._end_time is not None:
-                kwargs['timeout_seconds'] = max(0, self._end_time - flux.current_timeline.time())
             waiting.wait(self.poll, waiting_for=self, **kwargs)
-            _logger.debug("Finish waiting for {0!r}", self)
         except TimeoutExpired:
             exc_info = sys.exc_info()
             for timeout_callback in self._timeout_callbacks:
@@ -130,8 +130,11 @@ class PactBase(object):
             else:
                 raise exc # pylint: disable=raising-bad-type
         except Exception:
-            _logger.debug("Exception was raised while waiting for {0!r}", self, exc_info=True)
+            _logger.debug("Exception was raised while waiting for {!r}", self, exc_info=True)
             raise
+        else:
+            finish_time = flux.current_timeline.time()
+            _logger.debug("Finished waiting for {!r} (took: {:.04f} sec)", self, finish_time - start_time)
 
     def __repr__(self):
         raise NotImplementedError() # pragma: no cover
