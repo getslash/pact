@@ -1,6 +1,9 @@
 Changelog
 =========
 
+* :feature:`-` remove deprecated ``PactBase.finished()`` API
+* :feature:`-` write wait's duration seconds to log
+* :feature:`-` Switch to PBR
 * :release:`1.10.0 <15-10-2017>`
 * :feature:`-` ``PactGroup`` raises custom timeout exception from child if available
 * :release:`1.9.0 <6-8-2017>`

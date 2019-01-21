@@ -1,17 +1,17 @@
 language: python
+dist: xenial
 sudo: false
 python:
 - '2.7'
 - '3.4'
 - '3.5'
 - '3.6'
-- pypy
+- '3.7'
 before_install:
   - pip install -U setuptools pip
   - pip install coveralls
 install:
-  - pip install -U -r test_requirements.txt
-  - pip install -e .
+  - pip install -e .[testing]
 script:
   - pylint --rcfile=.pylintrc pact tests setup.py
   - pytest tests --cov=pact
