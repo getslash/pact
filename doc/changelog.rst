@@ -1,6 +1,8 @@
 Changelog
 =========
 
+* :feature:`-` Allow Pact.wait to be eager (checking all untils, not just the first one)
+* :release:`1.11.0 <21-01-2019>`
 * :feature:`-` remove deprecated ``PactBase.finished()`` API
 * :feature:`-` write wait's duration seconds to log
 * :feature:`-` Switch to PBR

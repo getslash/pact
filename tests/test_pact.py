@@ -149,6 +149,29 @@ def test_duration_doesnt_effect_finished_pacts(pact_duration, state):
     assert pact_duration.poll() and pact_duration.is_finished()
 
 
+@pytest.mark.parametrize('is_lazy', [True, False])
+def test_pact_lazy_or_eager(state, checkpoint1, checkpoint2, is_lazy):
+    a_pact = pact.Pact('Lazy/Eager pact', lazy=is_lazy)
+    assert state.is_finished_call_count == 0
+    a_pact.until(state.is_finished)
+    a_pact.until(checkpoint1)
+    a_pact.until(checkpoint2)
+    a_pact.poll()
+    assert state.is_finished_call_count == 1
+    expected = not is_lazy
+    assert not state.is_finished()
+    assert state.is_finished_call_count == 2
+    assert checkpoint1.called is expected
+    assert checkpoint2.called is expected
+    state.finish()
+    a_pact.poll()
+    assert state.is_finished_call_count == 3
+    assert state.is_finished()
+    assert state.is_finished_call_count == 4
+    assert checkpoint1.called
+    assert checkpoint2.called is expected
+
+
 class SampleException(Exception):
     pass
 

@@ -5,10 +5,11 @@ from .group import PactGroup
 
 class Pact(PactBase):
 
-    def __init__(self, msg, timeout_seconds=None):
+    def __init__(self, msg, timeout_seconds=None, lazy=True):
         self.msg = msg
         super(Pact, self).__init__(timeout_seconds)
         self._until = []
+        self._is_lazy = lazy
 
     def until(self, predicate, *args, **kwargs):
         """Adds a callback criterion for the completion of this pact
@@ -24,7 +25,13 @@ class Pact(PactBase):
         return self
 
     def _is_finished(self):
-        return all(predicate.satisfied() for predicate in self._until)
+        has_finished = True
+        for predicate in self._until:
+            if not predicate.satisfied():
+                has_finished = False
+                if self._is_lazy:
+                    break
+        return has_finished
 
     def group_with(self, other):
         return PactGroup([self, other])
