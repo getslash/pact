@@ -1,6 +1,7 @@
 Changelog
 =========
 
+* :release:`1.12.0 <03-02-2019>`
 * :feature:`-` Add custom repr to EdgeTriggered
 * :feature:`-` Allow Pact.wait to be eager (checking all untils, not just the first one)
 * :release:`1.11.0 <21-01-2019>`
