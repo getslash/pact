@@ -58,13 +58,13 @@ A very common scenario is to wait until a pact is finished. This is what the :fu
 		>>> p.is_finished()
 		True
 
-You can also specify a timeout in seconds. Expiration of the timeout will result in an exception:
+You can also specify a timeout in seconds and the polling interval. Expiration of the timeout will result in an exception:
 
 .. code-block:: python
 
 		>>> p = pact_delete_async('/path')
 		>>> try:
-		...     p.wait(timeout_seconds=1.5)
+		...     p.wait(timeout_seconds=1.5, sleep_seconds=0.5)
 		... except TimeoutExpired as e:
 		...     print('Got exception:', e)
 		Got exception: Timeout of 1.5 seconds expired waiting for <Pact: Deleting /path>
