@@ -7,7 +7,7 @@ class Pact(PactBase):
 
     def __init__(self, msg, timeout_seconds=None, lazy=True):
         self.msg = msg
-        super(Pact, self).__init__(timeout_seconds)
+        super().__init__(timeout_seconds)
         self._until = []
         self._is_lazy = lazy
 

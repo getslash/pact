@@ -1,6 +1,7 @@
 Changelog
 =========
 
+* :feature:`40` Drop support for python version < 3.5
 * :release:`1.12.0 <03-02-2019>`
 * :feature:`-` Add custom repr to EdgeTriggered
 * :feature:`-` Allow Pact.wait to be eager (checking all untils, not just the first one)

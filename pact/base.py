@@ -9,10 +9,10 @@ from waiting.exceptions import TimeoutExpired
 _logger = logbook.Logger(__name__)
 
 
-class PactBase(object):
+class PactBase():
 
     def __init__(self, timeout_seconds):
-        super(PactBase, self).__init__()
+        super().__init__()
         self._triggered = False # Make sure we only trigger 'then' once, even if using greenlets
         self._finished = False
         self._then = []
