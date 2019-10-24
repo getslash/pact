@@ -11,7 +11,7 @@ class PactGroup(PactBase):
         self._pacts = list(pacts)
         self._finished_pacts = []
         self._is_lazy = lazy
-        super(PactGroup, self).__init__(timeout_seconds)
+        super().__init__(timeout_seconds)
 
     def __iadd__(self, other):
         self.add(other)
@@ -23,7 +23,7 @@ class PactGroup(PactBase):
     def get_timeout_exception(self, exc_info):
         if self._pacts:
             return self._pacts[0].get_timeout_exception(exc_info)
-        return super(PactGroup, self).get_timeout_exception(exc_info)
+        return super().get_timeout_exception(exc_info)
 
     def add(self, pact, absorb=False):
         if absorb and isinstance(pact, PactGroup):

@@ -11,7 +11,7 @@ def callback(forge):
     return forge.create_wildcard_function_stub()
 
 
-class Pred(object):
+class Pred():
 
     _satisfied = False
 
@@ -22,7 +22,7 @@ class Pred(object):
         return self._satisfied
 
 
-class Checkpoint(object):
+class Checkpoint():
 
     called_times = 0
 
@@ -116,10 +116,10 @@ def pact_duration(state, num_seconds):
     return Pact('test pact', num_seconds).until(state.is_finished)
 
 
-class State(object):
+class State():
 
     def __init__(self):
-        super(State, self).__init__()
+        super().__init__()
         self._finished = False
         self.is_finished_call_count = 0
 
