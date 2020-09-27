@@ -112,7 +112,7 @@ class PactBase():
             kwargs['timeout_seconds'] = max(0, self._end_time - start_time)
         try:
             waiting.wait(self.poll, waiting_for=self, **kwargs)
-        except TimeoutExpired:
+        except TimeoutExpired as e:
             exc_info = sys.exc_info()
             for timeout_callback in self._timeout_callbacks:
                 timeout_callback()
@@ -120,7 +120,7 @@ class PactBase():
             if exc is None:
                 reraise(*exc_info)
             else:
-                raise exc # pylint: disable=raising-bad-type
+                raise exc from e  # pylint: disable=raising-bad-type
         except Exception:
             _logger.debug("Exception was raised while waiting for {!r}", self, exc_info=True)
             raise

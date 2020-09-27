@@ -11,8 +11,7 @@ DOCS_DIRS = [PROJECT_ROOT, os.path.join(PROJECT_ROOT, 'doc')]
 
 @pytest.mark.parametrize("path", [
     os.path.join(path, filename)
-    for path in DOCS_DIRS
-    for filename in os.listdir(path)
+    for path in DOCS_DIRS for filename in os.listdir(path)  # pylint: disable=undefined-variable
     if filename.endswith((".rst", ".md"))])
 def test_doctests(path):
     assert os.path.exists(path)
