@@ -126,7 +126,7 @@ def test_abosrbing_group_not_implemented():
 
 
 def test_iterating_empty_pact_group():
-    assert list(PactGroup()) == []
+    assert list(PactGroup()) == []  # pylint: disable=use-implicit-booleaness-not-comparison
 
 
 @pytest.mark.parametrize('satisfy_first', [True, False])
