@@ -4,7 +4,7 @@ Overview
 
 |                       |                                                                                    |
 |-----------------------|------------------------------------------------------------------------------------|
-| Build Status          | ![Build Status](https://secure.travis-ci.org/getslash/pact.png?branch=master,dev) |
+| Build Status          | ![Build Status](https://github.com/github/getslash/pact/workflows/main.yml/badge.svg) |
 | Supported Versions    | ![Supported Versions](https://img.shields.io/pypi/pyversions/pact.svg)    |
 | Latest Version        | ![Latest Version](https://img.shields.io/pypi/v/pact.svg)                  |
 | Test Coverage         | ![Coverage Status](https://coveralls.io/repos/getslash/pact/badge.svg?branch=master&service=github)   |
