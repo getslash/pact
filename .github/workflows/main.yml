@@ -25,4 +25,4 @@ jobs:
           .env/bin/pip install -U setuptools pip
           .env/bin/pip install '.[testing]'
           .env/bin/pytest tests --cov=pact
-          .env/bin/pylint --rcfile=.pylintrc pact tests setup.py
+          .env/bin/pylint --rcfile=.pylintrc pact tests
