@@ -1,16 +1,12 @@
 default: test
 
 test: env
-	.env/bin/pytest -x tests --cov=pact --cov-report=html
+	.venv/bin/pytest -x tests --cov=pact --cov-report=html
 
-env: .env/.up-to-date
-
-
-.env/.up-to-date: Makefile pyproject.toml
-	python -m venv .env
-	.env/bin/pip install -e .[testing,doc]
-	touch $@
+env:
+	uv venv
+	uv pip install -e ".[testing]"
 
 doc: env
-	.env/bin/sphinx-build -a -W -E doc build/sphinx/html
+	.venv/bin/sphinx-build -a -W -E doc build/sphinx/html
 
