@@ -11,7 +11,7 @@ def test_group_wait_during(checkpoint, timed_group, num_seconds):
     assert checkpoint.called_times == num_seconds + 1
 
 
-def test_group_wait_then(checkpoint, checkpoint1, checkpoint2, checkpoint3, timed_group, timed_pact):
+def test_group_wait_then(*, checkpoint, checkpoint1, checkpoint2, checkpoint3, timed_group, timed_pact):
     timed_group.lastly(checkpoint1)
     timed_group.then(checkpoint)
     timed_pact.then(checkpoint2)
@@ -74,7 +74,7 @@ def test_group_with_custom_timeout(state):
         group.wait()
 
 
-def test_group_without_absorb(pred1, pred2, checkpoint, checkpoint1, checkpoint2, checkpoint3):
+def test_group_without_absorb(*, pred1, pred2, checkpoint, checkpoint1, checkpoint2, checkpoint3):
     p1 = Pact('a').until(pred1).lastly(checkpoint).then(checkpoint1)
     p2 = Pact('b').until(pred2).then(checkpoint2).lastly(checkpoint3)
     group = p1 + p2
@@ -91,7 +91,7 @@ def test_group_without_absorb(pred1, pred2, checkpoint, checkpoint1, checkpoint2
     assert checkpoint3.called
 
 
-def test_group_with_absorb(pred1, pred2, checkpoint, checkpoint1, checkpoint2, checkpoint3):
+def test_group_with_absorb(*, pred1, pred2, checkpoint, checkpoint1, checkpoint2, checkpoint3):
     # pylint: disable=protected-access
     p1 = Pact('a').until(pred1).lastly(checkpoint).then(checkpoint1)
     p2 = Pact('b').until(pred2).then(checkpoint2).lastly(checkpoint3)
