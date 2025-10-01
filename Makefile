@@ -5,7 +5,7 @@ test: env
 
 env:
 	uv venv
-	uv pip install -e ".[testing]"
+	uv pip install -e ".[testing,doc]"
 
 doc: env
 	.venv/bin/sphinx-build -a -W -E doc build/sphinx/html
