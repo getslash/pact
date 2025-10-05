@@ -1,10 +1,8 @@
 Changelog
 =========
 
-* :feature:`-` Update python versions >=3.8, <=3.13
+* :feature:`-` Update python versions >=3.8, <=3.14
 * :feature:`-` Use UV in CI
-* :feature:`-` Update python versions >=3.7, <=3.12
-* :feature:`40` Drop support for python version < 3.5
 * :release:`1.12.0 <03-02-2019>`
 * :feature:`-` Add custom repr to EdgeTriggered
 * :feature:`-` Allow Pact.wait to be eager (checking all untils, not just the first one)
